@@ -1,0 +1,40 @@
+/* BookList.module.css */
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.heading {
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.list {
+    list-style: none;
+    padding: 0;
+}
+
+.listItem {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.listItem a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    display: block;
+    /* Занимает всю ширину контейнера */
+}
+
+.listItem a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
