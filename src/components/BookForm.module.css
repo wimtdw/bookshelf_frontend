@@ -1,0 +1,58 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    margin: 0 auto; /* Центрируем форму */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .form div {
+    margin-bottom: 15px;
+  }
+  
+  .form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form input[type="text"],
+  .form input[type="date"],
+  .form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Очень важно для правильной ширины */
+    font-size: 16px;
+  }
+  
+  .form textarea {
+    resize: vertical; /* Разрешаем вертикальное изменение размера */
+    min-height: 100px;
+  }
+  
+  .form button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .form button:hover {
+    background-color: #3e8e41;
+  }
+  
+  /* Добавляем стили для ошибок (опционально) */
+  .error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  

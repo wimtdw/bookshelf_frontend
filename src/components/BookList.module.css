@@ -1,40 +1,114 @@
 /* BookList.module.css */
 
 .container {
-    max-width: 800px;
-    margin: 0 auto;
+    font-family: sans-serif;
+    margin: 20px;
     padding: 20px;
-}
-
-.heading {
-    font-size: 2em;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #333;
-}
-
-.list {
-    list-style: none;
-    padding: 0;
-}
-
-.listItem {
-    margin-bottom: 10px;
-    padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    background-color: #f9f9f9;
-}
-
-.listItem a {
+  }
+  
+  .heading {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .createButton {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
     text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .createButton:hover {
+    background-color: #3e8e41;
+  }
+  
+  .bookList {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .bookItem {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .bookLink {
     color: #007bff;
-    font-weight: bold;
-    display: block;
-    /* Занимает всю ширину контейнера */
-}
-
-.listItem a:hover {
-    color: #0056b3;
+    text-decoration: none;
+  }
+  
+  .bookLink:hover {
     text-decoration: underline;
-}
+  }
+  
+  .deleteButton {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  
+  .deleteButton:hover {
+    background-color: #c82333;
+  }
+  
+  /* Стили для BookForm (предполагаемые, если BookForm тоже без стилей)  */
+  .form {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .input {
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .formButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .formButton:hover {
+    background-color: #0056b3;
+  }
+  

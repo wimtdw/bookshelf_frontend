@@ -1,20 +1,20 @@
-// src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import BookList from './components/BookList';
 import BookDetail from './components/BookDetail';
-import BookParent from './components/BookParent';
 
-const App = () => {
+function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/books/:id" element={<BookDetail />} />
-        <Route path="/" element={<BookParent />} />
-      </Routes>
-    </Router>
+    <div className="App">
+      <Router>
+        <Routes>
+          <Route path="/" element={<BookList />} />
+          <Route path="/books/:id" element={<BookDetail />} />
+        </Routes>
+      </Router>
+    </div>
   );
-};
+}
 
 export default App;
 
