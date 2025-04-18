@@ -15,7 +15,6 @@ const ParentComponent = () => {
 
   return (
     <div>
-      {/* Передаем список книг как пропс */}
       <BookList books={books} />
     </div>
   );

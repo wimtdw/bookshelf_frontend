@@ -1,0 +1,30 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.contentWrapper {
+    width: 600px;
+    padding: 20px;
+}
+
+
+.eulaTitle {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #000000;
+}
+
+.eulaText {
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #000000;
+    font-size: 18px;
+}
+
+.agreementSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

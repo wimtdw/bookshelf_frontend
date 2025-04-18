@@ -1,45 +1,58 @@
-/* BookDetail.module.css */
-
 .container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-  }
-  
-  .title {
-    font-size: 2em;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  .description {
-    font-size: 1.1em;
-    line-height: 1.6;
-    color: #555;
-    margin-bottom: 20px;
-  }
-  
-  .button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    margin-right: 10px;
-  }
-  
-  .button:hover {
-    background-color: #0056b3;
-  }
-  
-  .editing {
-      border: 2px solid #007bff;
-      padding: 15px;
-      margin-bottom: 20px;
-  }
-  
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.backButton {
+  display: inline-block;
+  margin-bottom: 20px;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.title {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.description {
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 10px;
+}
+
+.button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.editing {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.bookDetails {
+  margin-bottom: 20px;
+}
+
+.author,
+.publicationDate,
+.isbn,
+.genre {
+  margin-bottom: 8px;
+}

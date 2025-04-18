@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import BookForm from './BookForm';
-import styles from './BookList.module.css'; // Импорт CSS Modules
+import styles from './BookList.module.css'; 
+
 
 const BookList = () => {
   const [books, setBooks] = useState([]);
@@ -49,6 +50,7 @@ const BookList = () => {
 
   return (
     <div className={styles.container}>
+      <Link to="/license-agreement" className={styles.agreementButton}>Go to License Agreement</Link>
       <h1 className={styles.heading}>Книги</h1>
       <button className={styles.createButton} onClick={toggleFormVisibility}>Создать новую книгу</button>
       {isFormVisible && <BookForm onSubmit={handleFormSubmit} />}

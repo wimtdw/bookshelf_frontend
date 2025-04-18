@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './BookForm.module.css'; // Импортируем CSS-модуль
+import styles from './BookForm.module.css'; 
 
 const BookForm = ({ initialData = {}, onSubmit }) => {
   const [title, setTitle] = useState(initialData.title || '');
@@ -15,7 +15,7 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}> {/* Используем стили из модуля */}
+    <form onSubmit={handleSubmit} className={styles.form}>
       <div>
         <label>Название:</label>
         <input

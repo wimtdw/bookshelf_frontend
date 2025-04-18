@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     max-width: 500px;
-    margin: 0 auto; /* Центрируем форму */
+    margin: 0 auto; 
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -26,12 +26,12 @@
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    box-sizing: border-box; /* Очень важно для правильной ширины */
+    box-sizing: border-box; 
     font-size: 16px;
   }
   
   .form textarea {
-    resize: vertical; /* Разрешаем вертикальное изменение размера */
+    resize: vertical; 
     min-height: 100px;
   }
   
@@ -49,7 +49,7 @@
     background-color: #3e8e41;
   }
   
-  /* Добавляем стили для ошибок (опционально) */
+  
   .error {
     color: red;
     font-size: 14px;
