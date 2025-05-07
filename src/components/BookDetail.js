@@ -11,6 +11,10 @@ const BookDetail = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
 
+    const getRandomColor = (id) => {
+        const colors = ['#FFB3BA', '#BAFFC9', '#BAE1FF', '#FFDFBA', '#D0BAFF'];
+        return colors[id % colors.length];
+    };
 
     useEffect(() => {
         const fetchBook = async () => {
@@ -19,7 +23,6 @@ const BookDetail = () => {
                 setBook(response.data);
             } catch (error) {
                 console.error("Ошибка при загрузке книги:", error);
-
             }
         };
 
@@ -33,7 +36,6 @@ const BookDetail = () => {
             }
         };
 
-
         fetchBook();
         fetchCurrentUser();
     }, [id]);
@@ -44,7 +46,6 @@ const BookDetail = () => {
             navigate('/');
         } catch (error) {
             console.error("Ошибка при удалении книги:", error);
-
         }
     };
 
@@ -62,20 +63,18 @@ const BookDetail = () => {
             navigate('/');
         } catch (error) {
             console.error("Ошибка при сохранении книги:", error);
-
         }
     };
 
     const canDelete = (book) => {
         if (!currentUser) return false;
-        console.log(currentUser)
         return currentUser.is_staff || book.entry_author === currentUser.username;
     };
+
     const canEdit = (book) => {
         if (!currentUser) return false;
         return currentUser.is_staff || book.entry_author === currentUser.username;
     };
-
 
     if (!book) return <div>Загрузка...</div>;
 
@@ -89,21 +88,49 @@ const BookDetail = () => {
                     <BookForm initialData={book} onSubmit={handleFormSubmit} />
                 </div>
             ) : (
-                <div className={styles.bookDetails}>
-                    <h2 className={styles.title}>{book.title}</h2>
-                    <p className={styles.author}><b>Автор:</b> {book.author}</p>
-                    <p className={styles.description}><b>Описание:</b> {book.description}</p>
-                    <p className={styles.publicationDate}><b>Дата публикации:</b> {book.publication_date}</p>
-                    <p className={styles.isbn}><b>ISBN:</b> {book.isbn}</p>
-                    <p className={styles.genre}><b>Жанр:</b> {book.genre}</p>
+                <div className={styles.bookContent}>
+                    <div className={styles.coverSection}>
+                        {book.cover ? (
+                            <img 
+                                src={book.cover} 
+                                alt="Обложка книги" 
+                                className={styles.coverImage} 
+                            />
+                        ) : (
+                            <div 
+                                className={styles.coverPlaceholder}
+                                style={{ backgroundColor: getRandomColor(book.id) }}
+                            >
+                                <div className={styles.placeholderContent}>
+                                    <h3>{book.title}</h3>
+                                    <p>{book.author}</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    
+                    <div className={styles.infoSection}>
+                        <h2 className={styles.title}>{book.title}</h2>
+                        <div className={styles.metaInfo}>
+                            <p><b>Автор:</b> {book.author || 'отсутствует'}</p>
+                            <p><b>Год публикации:</b> {book.publication_year || 'отсутствует'}</p>
+                            <p><b>Жанры:</b> {book.genres?.length > 0 ? book.genres.join(', ') : 'отсутствует'}</p>
+                            <p><b>Описание:</b> {book.description || 'отсутствует'}</p>
+                            {/* <p><b>Добавлено пользователем:</b> {book.entry_author}</p> */}
+                        </div>
 
-                    <div className={styles.buttonContainer}>
-                        {canEdit(book) && (
-                            <button className={styles.button} onClick={handleEdit}>Изменить</button>
-                        )}
-                        {canDelete(book) && (
-                            <button className={styles.button} onClick={handleDelete}>Удалить</button>
-                        )}
+                        <div className={styles.buttonContainer}>
+                            {canEdit(book) && (
+                                <button className={styles.button} onClick={handleEdit}>
+                                    Изменить
+                                </button>
+                            )}
+                            {canDelete(book) && (
+                                <button className={styles.button} onClick={handleDelete}>
+                                    Удалить
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

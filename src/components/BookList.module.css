@@ -1,147 +1,111 @@
 .container {
-  font-family: sans-serif;
-  margin: 20px;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.heading {
-  color: #333;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.createButton {
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.createButton:hover {
-  background-color: #3e8e41;
-}
-
-.bookList {
-  list-style-type: none;
-  padding: 0;
-}
-
-.bookItem {
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid #eee;
-  border-radius: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.bookLink {
-  color: #007bff;
-  text-decoration: none;
-}
-
-.bookLink:hover {
-  text-decoration: underline;
-}
-
-.deleteButton {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-.deleteButton:hover {
-  background-color: #c82333;
-}
-
-.form {
-  margin-top: 20px;
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-}
-
-.label {
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.input {
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.formButton {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.formButton:hover {
-  background-color: #0056b3;
-}
-
-.agreementButton {
-  display: inline-block;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  text-decoration: none;
-  color: white;
-  background-color: #c553d4;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.agreementButton:hover {
-  background-color: #a843b6;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .authButtons {
-  display: inline-block;
-  /* position: absolute; */
-  top: 10px;
-  right: 10px;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
 }
 
 .authButton {
-  text-decoration: none;
-  margin-left: 10px;
-  padding: 10px 20px;
-  background-color: #3e33bb;
+  padding: 0.3rem 0.8rem;
+  background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 3px;
   cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9rem;
 }
 
+.heading {
+  text-align: center;
+  margin: 1rem 0;
+  font-size: 1.5rem;
+}
+
+.createButton {
+  display: block;
+  margin: 0 auto 1.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.bookShelf {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.bookWrapper {
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.coverSection {
+  height: 180px;
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.coverSection:hover {
+  transform: translateY(-5px);
+}
+
+.coverImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ddd;
+}
+
+.coverPlaceholder {
+  width: 100%;
+  height: 180px; /* Фиксированная высота как у картинки */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  color: white;
+  padding: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box; /* Добавлено для корректного расчета размеров */
+}
+
+.placeholderContent {
+  max-width: 100%;
+  padding: 0.3rem;
+  word-break: break-word;
+}
+
+.placeholderContent h3 {
+  margin: 0 0 0.3rem;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.placeholderContent p {
+  margin: 0;
+  font-size: 0.7rem;
+  opacity: 0.9;
+}
+
+.bookLink {
+  text-decoration: none;
+  color: inherit;
+}

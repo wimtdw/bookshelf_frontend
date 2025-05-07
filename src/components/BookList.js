@@ -4,116 +4,108 @@ import { Link } from 'react-router-dom';
 import BookForm from './BookForm';
 import styles from './BookList.module.css';
 
+const getRandomColor = (id) => {
+    const colors = ['#FFB3BA', '#BAFFC9', '#BAE1FF', '#FFDFBA', '#D0BAFF'];
+    return colors[id % colors.length];
+};
+
 const BookList = () => {
-  const [books, setBooks] = useState([]);
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem('access_token')
-  );
-  const [currentUser, setCurrentUser] = useState(null);
+    const [books, setBooks] = useState([]);
+    const [isFormVisible, setIsFormVisible] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(
+        !!localStorage.getItem('access_token')
+    );
 
-  axios.interceptors.request.use(config => {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  });
+    axios.interceptors.request.use(config => {
+        const token = localStorage.getItem('access_token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    });
 
-  useEffect(() => {
-    fetchBooks();
-    fetchCurrentUser();
-  }, []);
+    useEffect(() => {
+        fetchBooks();
+    }, []);
 
-  const fetchBooks = async () => {
-    try {
-      const response = await axios.get('http://127.0.0.1:8000/api/v1/books/');
-      setBooks(response.data);
-    } catch (error) {
-      console.error("Error fetching books:", error);
-    }
-  };
+    const fetchBooks = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/v1/books/');
+            setBooks(response.data);
+        } catch (error) {
+            console.error("Error fetching books:", error);
+        }
+    };
 
-  const fetchCurrentUser = async () => {
-    try {
-      const response = await axios.get('http://127.0.0.1:8000/auth/users/me/');
-      setCurrentUser(response.data);
-    } catch (error) {
-      console.error("Error fetching current user:", error);
-    }
-  };
+    const handleLogout = () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        setIsAuthenticated(false);
+    };
 
-  const handleLogout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    setIsAuthenticated(false);
-    setCurrentUser(null);
-  };
+    const handleFormSubmit = async (bookData) => {
+        try {
+            await axios.post('http://127.0.0.1:8000/api/v1/books/', bookData);
+            setIsFormVisible(false);
+            fetchBooks();
+        } catch (error) {
+            console.error("Error submitting form:", error);
+        }
+    };
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://127.0.0.1:8000/api/v1/books/${id}/`);
-      fetchBooks();
-    } catch (error) {
-      console.error("Error deleting book:", error);
-    }
-  };
+    const toggleFormVisibility = () => {
+        setIsFormVisible(prev => !prev);
+    };
 
-  const handleFormSubmit = async (bookData) => {
-    try {
-      await axios.post('http://127.0.0.1:8000/api/v1/books/', bookData);
-      setIsFormVisible(false);
-      fetchBooks();
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  };
-
-  const toggleFormVisibility = () => {
-    setIsFormVisible(prev => !prev);
-  };
-
-  const canDelete = (book) => {
-    if (!currentUser) return false;
-    console.log(currentUser, book.entry_author)
-    return currentUser.is_staff || book.entry_author === currentUser.username;
-  };
-
-  return (
-    <div className={styles.container}>
-      <Link to="/license-agreement" className={styles.agreementButton}>Go to License Agreement</Link>
-      <div className={styles.authButtons}>
-        {isAuthenticated ? (
-          <button onClick={handleLogout} className={styles.authButton}>Выйти</button>
-        ) : (
-          <>
-            <Link to="/signup" className={styles.authButton}>Зарегистрироваться</Link>
-            <Link to="/signin" className={styles.authButton}>Войти</Link>
-          </>
-        )}
-      </div>
-      
-      <h1 className={styles.heading}>Книги</h1>
-      {isAuthenticated && (
-        <button className={styles.createButton} onClick={toggleFormVisibility}>
-          Создать новую книгу
-        </button>
-      )}
-      {isFormVisible && <BookForm onSubmit={handleFormSubmit} />}
-      <ul className={styles.bookList}>
-        {books.map(book => (
-          <li key={book.id} className={styles.bookItem}>
-            <Link to={`/books/${book.id}`} className={styles.bookLink}>{book.title}</Link>
-            {isAuthenticated && canDelete(book) && (
-              <button className={styles.deleteButton} onClick={() => handleDelete(book.id)}>
-                Удалить
-              </button>
+    return (
+      <div className={styles.container}>
+            <div className={styles.authButtons}>
+                {isAuthenticated ? (
+                    <button onClick={handleLogout} className={styles.authButton}>Выйти</button>
+                ) : (
+                    <>
+                        <Link to="/signup" className={styles.authButton}>Зарегистрироваться</Link>
+                        <Link to="/signin" className={styles.authButton}>Войти</Link>
+                    </>
+                )}
+            </div>
+            
+            <h1 className={styles.heading}>Книги</h1>
+            {isAuthenticated && (
+                <button className={styles.createButton} onClick={toggleFormVisibility}>
+                    Добавить книгу
+                </button>
             )}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+            {isFormVisible && <BookForm onSubmit={handleFormSubmit} />}
+            <div className={styles.bookShelf}>
+                {books.map(book => (
+                    <div key={book.id} className={styles.bookWrapper}>
+                        <Link to={`/books/${book.id}`} className={styles.bookLink}>
+                            <div className={styles.coverSection}>
+                                {book.cover ? (
+                                    <img 
+                                        src={book.cover} 
+                                        alt="Обложка книги" 
+                                        className={styles.coverImage} 
+                                    />
+                                ) : (
+                                    <div 
+                                        className={styles.coverPlaceholder}
+                                        style={{ backgroundColor: getRandomColor(book.id) }}
+                                    >
+                                        <div className={styles.placeholderContent}>
+                                            <h3>{book.title}</h3>
+                                            <p>{book.author}</p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </Link>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
 };
 
 export default BookList;
