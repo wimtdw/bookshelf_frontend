@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import BookForm from './BookForm';
-import styles from './BookDetail.module.css'; 
+import styles from './BookDetail.module.css';
 
 const BookDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [book, setBook] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null);
+
 
     useEffect(() => {
         const fetchBook = async () => {
@@ -17,11 +19,23 @@ const BookDetail = () => {
                 setBook(response.data);
             } catch (error) {
                 console.error("Ошибка при загрузке книги:", error);
-            
+
             }
         };
 
+        const fetchCurrentUser = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/auth/users/me/');
+                setCurrentUser(response.data);
+            } catch (error) {
+                console.error("Ошибка при загрузке данных о пользователе:", error);
+                setCurrentUser(null);
+            }
+        };
+
+
         fetchBook();
+        fetchCurrentUser();
     }, [id]);
 
     const handleDelete = async () => {
@@ -30,7 +44,7 @@ const BookDetail = () => {
             navigate('/');
         } catch (error) {
             console.error("Ошибка при удалении книги:", error);
-        
+
         }
     };
 
@@ -48,9 +62,20 @@ const BookDetail = () => {
             navigate('/');
         } catch (error) {
             console.error("Ошибка при сохранении книги:", error);
-        
+
         }
     };
+
+    const canDelete = (book) => {
+        if (!currentUser) return false;
+        console.log(currentUser)
+        return currentUser.is_staff || book.entry_author === currentUser.username;
+    };
+    const canEdit = (book) => {
+        if (!currentUser) return false;
+        return currentUser.is_staff || book.entry_author === currentUser.username;
+    };
+
 
     if (!book) return <div>Загрузка...</div>;
 
@@ -73,8 +98,12 @@ const BookDetail = () => {
                     <p className={styles.genre}><b>Жанр:</b> {book.genre}</p>
 
                     <div className={styles.buttonContainer}>
-                        <button className={styles.button} onClick={handleEdit}>Изменить</button>
-                        <button className={styles.button} onClick={handleDelete}>Удалить</button>
+                        {canEdit(book) && (
+                            <button className={styles.button} onClick={handleEdit}>Изменить</button>
+                        )}
+                        {canDelete(book) && (
+                            <button className={styles.button} onClick={handleDelete}>Удалить</button>
+                        )}
                     </div>
                 </div>
             )}

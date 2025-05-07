@@ -5,6 +5,8 @@ import createAppStore from './store/createStore';
 import BookList from './components/BookList';
 import BookDetail from './components/BookDetail';
 import LicenseAgreement from './components/LicenseAgreement';
+import SignUp from './components/SignUp';
+import SignIn from './components/SignIn';
 
 const store = createAppStore();
 
@@ -17,6 +19,8 @@ function App() {
             <Route path="/" element={<BookList />} />
             <Route path="/books/:id" element={<BookDetail />} />
             <Route path="/license-agreement" element={<LicenseAgreement />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signin" element={<SignIn />} />
           </Routes>
         </Router>
       </div>
