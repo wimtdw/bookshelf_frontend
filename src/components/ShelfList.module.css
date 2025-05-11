@@ -21,6 +21,8 @@
 
 .heading {
     text-align: center;
+    margin-top: 0;
+    font-size: 1.5rem;
     margin-bottom: 30px;
 }
 
@@ -145,5 +147,15 @@
   .link{
     text-decoration: none;
   }
+
+  .shelvesGrid.centered {
+    grid-template-columns: 1fr;
+    justify-items: center; 
+  }
+  
+  .shelvesGrid.centered .shelfContainer {
+    width: 100%; /* Занимает всю ширину grid-ячейки */
+    max-width: 280px; /* Максимальная ширина полки */
+}
   
 

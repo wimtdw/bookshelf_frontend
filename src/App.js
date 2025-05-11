@@ -5,12 +5,12 @@ import axios from 'axios';
 import createAppStore from './store/createStore';
 import BookList from './components/BookList';
 import BookDetail from './components/BookDetail';
-import LicenseAgreement from './components/LicenseAgreement';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import ShelfList from './components/ShelfList';
 import ShelfForm from './components/ShelfForm';
-import ShelfDetail from './components/ShelfDetail'; // Заглушка, пока не реализована
+import { AuthProvider } from './components/AuthContext';
+import AuthButtons from './components/AuthButtons';
 
 axios.interceptors.request.use(config => {
   const token = localStorage.getItem('access_token');
@@ -25,21 +25,22 @@ const store = createAppStore();
 function App() {
   return (
     <Provider store={store}>
-      <div className="App">
-        <Router>
+      <AuthProvider>
+        <div className="App">
+          <Router>
+            <AuthButtons />
           <Routes>
             <Route path="/" element={<BookList />} />
             <Route path="/shelves" element={<ShelfList />} />
-            <Route path="/shelves/:id" element={<ShelfDetail />} />
             <Route path="/shelves/create" element={<ShelfForm />} />
             <Route path="/shelves/edit/:id" element={<ShelfForm />} />
             <Route path="/books/:id" element={<BookDetail />} />
-            <Route path="/license-agreement" element={<LicenseAgreement />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
           </Routes>
         </Router>
       </div>
+      </AuthProvider>
     </Provider>
   );
 }

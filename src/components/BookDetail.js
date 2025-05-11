@@ -91,13 +91,13 @@ const BookDetail = () => {
                 <div className={styles.bookContent}>
                     <div className={styles.coverSection}>
                         {book.cover ? (
-                            <img 
-                                src={book.cover} 
-                                alt="Обложка книги" 
-                                className={styles.coverImage} 
+                            <img
+                                src={book.cover}
+                                alt="Обложка книги"
+                                className={styles.coverImage}
                             />
                         ) : (
-                            <div 
+                            <div
                                 className={styles.coverPlaceholder}
                                 style={{ backgroundColor: getRandomColor(book.id) }}
                             >
@@ -108,17 +108,8 @@ const BookDetail = () => {
                             </div>
                         )}
                     </div>
-                    
-                    <div className={styles.infoSection}>
-                        <h2 className={styles.title}>{book.title}</h2>
-                        <div className={styles.metaInfo}>
-                            <p><b>Автор:</b> {book.author || 'отсутствует'}</p>
-                            <p><b>Год публикации:</b> {book.publication_year || 'отсутствует'}</p>
-                            <p><b>Жанры:</b> {book.genres?.length > 0 ? book.genres.join(', ') : 'отсутствует'}</p>
-                            <p><b>Описание:</b> {book.description || 'отсутствует'}</p>
-                            {/* <p><b>Добавлено пользователем:</b> {book.entry_author}</p> */}
-                        </div>
 
+                    <div className={styles.infoSection}>
                         <div className={styles.buttonContainer}>
                             {canEdit(book) && (
                                 <button className={styles.button} onClick={handleEdit}>
@@ -131,6 +122,16 @@ const BookDetail = () => {
                                 </button>
                             )}
                         </div>
+                        <h2 className={styles.title}>{book.title}</h2>
+                        <div className={styles.metaInfo}>
+                            <p><b>Автор:</b> {book.author || 'отсутствует'}</p>
+                            <p><b>Год публикации:</b> {book.publication_year || 'отсутствует'}</p>
+                            <p><b>Жанры:</b> {book.genres?.length > 0 ? book.genres.join(', ') : 'отсутствует'}</p>
+                            <p><b>Описание:</b> {book.description || 'отсутствует'}</p>
+                            {/* <p><b>Добавлено пользователем:</b> {book.entry_author}</p> */}
+                        </div>
+
+
                     </div>
                 </div>
             )}

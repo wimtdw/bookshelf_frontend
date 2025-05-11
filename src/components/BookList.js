@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import BookForm from './BookForm';
 import styles from './BookList.module.css';
+import { useAuth } from './AuthContext';
+
 
 const getRandomColor = (id) => {
   const colors = ['#E68A94', '#84E69F', '#84B8E6', '#E6B08A', '#A784E6'];
@@ -12,9 +14,10 @@ const getRandomColor = (id) => {
 const BookList = () => {
   const [books, setBooks] = useState([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem('access_token')
-  );
+  const { isAuthenticated } = useAuth();
+  // const [isAuthenticated, setIsAuthenticated] = useState(
+  //   !!localStorage.getItem('access_token')
+  // );
   const [searchParams] = useSearchParams();
   const shelfId = searchParams.get('shelf_id');
   const [currentShelf, setCurrentShelf] = useState(null);
@@ -54,12 +57,11 @@ const BookList = () => {
     fetchShelf();
   }, [shelfId]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    setIsAuthenticated(false);
-    setBooks([]);
-  };
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setBooks([]);
+    }
+  }, [isAuthenticated]);
 
   const handleFormSubmit = async (bookData) => {
     try {
@@ -105,16 +107,7 @@ const BookList = () => {
   };
   return (
     <div className={styles.container}>
-      <div className={styles.authButtons}>
-        {isAuthenticated ? (
-          <button onClick={handleLogout} className={styles.authButton}>Выйти</button>
-        ) : (
-          <>
-            <Link to="/signup" className={styles.authButton}>Зарегистрироваться</Link>
-            <Link to="/signin" className={styles.authButton}>Войти</Link>
-          </>
-        )}
-      </div>
+      
 
       <h1 className={styles.heading}>
         {currentShelf?.title || "Книги"}
@@ -141,7 +134,8 @@ const BookList = () => {
         </div>
       )}
       {isFormVisible && <BookForm onSubmit={handleFormSubmit} />}
-      {/* Добавляем блок с описанием */}
+      {!isFormVisible && (
+        <>
       {currentShelf?.description && (
         <div className={styles.shelfDescription}>
           {currentShelf.description}
@@ -200,8 +194,11 @@ const BookList = () => {
               →
             </button>
           </div>
+          
         ))}
       </div>
+      </>
+      )}
     </div>
   );
 };

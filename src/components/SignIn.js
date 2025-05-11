@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom'; 
 import styles from './SignUp.module.css'; 
+import { useAuth } from './AuthContext';
 
 const SignIn = () => {
+    
     const [credentials, setCredentials] = useState({
         username: '',
         password: '',
     });
+    const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -16,15 +20,18 @@ const SignIn = () => {
             const response = await axios.post('http://127.0.0.1:8000/auth/jwt/create/', credentials);
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
+            login();
             navigate('/');
         } catch (error) {
             console.error('Ошибка входа:', error);
+            setError('Неверное имя пользователя или пароль');
         }
     };
 
     return (
         <div className={styles.container}>
             <h2 className={styles.heading}>Вход</h2>
+            {error && <div className={styles.error}>{error}</div>}
             <form onSubmit={handleSubmit} className={styles.form}>
                 <input
                     type="text"

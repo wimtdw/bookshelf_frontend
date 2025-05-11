@@ -1,25 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom'; // Добавляем useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './ShelfList.module.css';
+import { useAuth } from './AuthContext';
 
 const ShelfList = () => {
-    const navigate = useNavigate(); // Хук для навигации
+    const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
     const [shelves, setShelves] = useState([]);
-    const [isAuthenticated, setIsAuthenticated] = useState(
-        !!localStorage.getItem('access_token')
-    );
-
-    axios.interceptors.request.use(config => {
-        const token = localStorage.getItem('access_token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    });
-
-
     const [currentUser, setCurrentUser] = useState(null);
+    
+
 
     const fetchCurrentUser = async () => {
         try {
@@ -39,28 +30,29 @@ const ShelfList = () => {
             console.error("Error fetching shelves:", error);
         }
     };
+
     useEffect(() => {
         fetchShelves();
         fetchCurrentUser();
     }, []);
 
-    const handleLogout = () => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        setIsAuthenticated(false);
-        setShelves([]);
-    };
+    useEffect(() => {
+        // Эффект для очистки данных при выходе
+        if (!isAuthenticated) {
+            setShelves([]);
+            setCurrentUser(null);
+        }
+    }, [isAuthenticated]);
 
     const handleDeleteShelf = async (shelfId) => {
         try {
             await axios.delete(`http://127.0.0.1:8000/api/v1/shelves/${shelfId}/`);
-            fetchShelves(); // Обновляем список после удаления
+            fetchShelves();
         } catch (error) {
             console.error("Ошибка при удалении полки:", error);
         }
     };
 
-    // Статичная первая полка "Все книги"
     const allBooksShelf = {
         id: 0,
         title: "Все книги",
@@ -68,42 +60,30 @@ const ShelfList = () => {
     };
 
     const combinedShelves = [allBooksShelf, ...shelves];
-
+    const shouldCenter = combinedShelves.length === 1 && combinedShelves[0].id === 0;
     return (
         <div className={styles.container}>
-            <div className={styles.authButtons}>
-                {isAuthenticated ? (
-                    <button onClick={handleLogout} className={styles.authButton}>Выйти</button>
-                ) : (
-                    <>
-                        <Link to="/signup" className={styles.authButton}>Зарегистрироваться</Link>
-                        <Link to="/signin" className={styles.authButton}>Войти</Link>
-                    </>
-                )}
-            </div>
-
             <h1 className={styles.heading}>Мои полки</h1>
 
             {isAuthenticated && (
                 <div className={styles.createShelfContainer}>
                     <button
                         className={styles.createButton}
-                        onClick={() => navigate('/shelves/create')} // Добавляем обработчик перехода
+                        onClick={() => navigate('/shelves/create')}
                     >
                         Создать полку
                     </button>
                 </div>
             )}
 
-            <div className={styles.shelvesGrid}>
-                    {combinedShelves.map((shelf) => (
-                        <div key={shelf.id} className={styles.shelfContainer}>
-                        {/* <div key={shelf.id} className={styles.shelfCard}> */}
-                            <Link className={styles.link}
-                                to={shelf.id === 0 ? "/" : `/?shelf_id=${shelf.id}`}
-                                
-                            >
-                                <div key={shelf.id} className={styles.shelfCard}>
+            <div className={`${styles.shelvesGrid} ${shouldCenter ? styles.centered : ''}`}>
+                {combinedShelves.map((shelf) => (
+                    <div key={shelf.id} className={styles.shelfContainer}>
+                        <Link
+                            className={styles.link}
+                            to={shelf.id === 0 ? "/" : `/?shelf_id=${shelf.id}`}
+                        >
+                            <div className={styles.shelfCard}>
                                 <div className={styles.shelfContent}>
                                     <h3 className={styles.shelfTitle}>{shelf.title}</h3>
                                 </div>
@@ -114,42 +94,21 @@ const ShelfList = () => {
                                         className={styles.shelfImage}
                                     />
                                 )}
-                                </div>
-                            </Link>
-                            {currentUser && shelf.id !== 0 && (
-                                (currentUser.is_staff || shelf.owner === currentUser.id) && (
-                                    <button
-                                        className={styles.deleteButton}
-                                        onClick={() => handleDeleteShelf(shelf.id)}
-                                    >
-                                        Удалить
-                                    </button>
-                                )
-                            )}
-                        </div>
-                    ))}
-                </div>
-                {/* {combinedShelves.map((shelf) => (
-                    <Link
-                        key={shelf.id}
-                        to={shelf.id === 0 ? "/" : `/?shelf_id=${shelf.id}`}
-                        className={styles.shelfCard}
-                    >
-                        <div className={styles.shelfContent}>
-                            <h3 className={styles.shelfTitle}>{shelf.title}</h3>
-
-                        </div>
-
-                        {shelf.background_image && (
-                            <img
-                                src={shelf.background_image}
-                                alt="Обложка полки"
-                                className={styles.shelfImage}
-                            />
+                            </div>
+                        </Link>
+                        {currentUser && shelf.id !== 0 && (
+                            (currentUser.is_staff || shelf.owner === currentUser.username) && (
+                                <button
+                                    className={styles.deleteButton}
+                                    onClick={() => handleDeleteShelf(shelf.id)}
+                                >
+                                    Удалить
+                                </button>
+                            )
                         )}
-
-                    </Link>
-                ))} */}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };

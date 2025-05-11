@@ -1,0 +1,25 @@
+/* BookList.module.css */
+.authButtons {
+    display: flex;
+    justify-content: end;
+    gap: 1rem;
+    margin: 1rem 1rem 0 auto; /* Отступы: сверху/снизу 1rem, справа 1rem, слева auto */
+}
+
+.authButton {
+    padding: 0.5rem 1rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.2s ease;
+    font-family: inherit;
+}
+
+.authButton:hover {
+    background-color: #218838;
+}
