@@ -54,7 +54,7 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
         author: data.author || prev.author,
         publicationYear: data.publication_date || prev.publicationYear,
         genres: data.subjects || prev.genres,
-        cover: data.cover // Убрано сохранение предыдущей обложки
+        cover: data.cover
       }));
       setUseCover(!!data.cover);
       
@@ -82,8 +82,9 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
       genres: formData.genres
     };
     
-    if (!useCover || !submitData.cover) {
-      delete submitData.cover;
+    // Основное изменение: явный сброс обложки при отключенной галочке
+    if (!useCover) {
+      submitData.cover = '';
     }
     
     onSubmit(submitData);

@@ -1,0 +1,112 @@
+.form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.form>div {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.booksSelect {
+  width: 100%;
+  min-height: 150px;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+.hint {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+}
+
+.backgroundGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.backgroundOption {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.backgroundOption input[type="radio"] {
+  display: none;
+}
+
+.backgroundOption input[type="radio"]:checked+.backgroundPreview {
+  border-color: #2196F3;
+}
+
+.backgroundPreview {
+  border: 2px solid transparent;
+  border-radius: 6px;
+  padding: 5px;
+}
+
+.backgroundPreview img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.backgroundPreview span {
+  display: block;
+  text-align: center;
+  margin-top: 5px;
+  font-size: 0.9em;
+}
+
+.error {
+  color: #dc3545;
+  padding: 10px;
+  margin: 15px 0;
+  border: 1px solid #dc3545;
+  border-radius: 4px;
+}
+
+
+
+
+.noBackground {
+  padding: 40px;
+  background: #f0f0f0;
+  border: 2px dashed #ccc;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.createButton {
+  display: block;
+  margin: 0 auto 1.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+

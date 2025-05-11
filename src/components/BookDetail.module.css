@@ -117,44 +117,44 @@
 
 @media (max-width: 768px) {
   .bookContent {
-      flex-direction: column;
-      gap: 2rem;
+    flex-direction: column;
+    gap: 2rem;
   }
 
   .coverSection {
-      flex: none;
-      width: 100%;
-      max-width: 300px;
-      margin: 0 auto;
+    flex: none;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
   }
 
   .title {
-      font-size: 1.8rem;
+    font-size: 1.8rem;
   }
 }
 
 @media (max-width: 480px) {
   .container {
-      padding: 1rem;
+    padding: 1rem;
   }
 
   .coverPlaceholder {
-      height: 350px;
+    height: 350px;
   }
 
   .placeholderContent h3 {
-      font-size: 1.2rem;
+    font-size: 1.2rem;
   }
 
   .placeholderContent p {
-      font-size: 1rem;
+    font-size: 1rem;
   }
 
   .buttonContainer {
-      flex-direction: column;
+    flex-direction: column;
   }
 
   .button {
-      width: 100%;
+    width: 100%;
   }
 }

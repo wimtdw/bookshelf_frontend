@@ -27,10 +27,13 @@
   margin: 1rem 0;
   font-size: 1.5rem;
 }
-
+.buttonsContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
 .createButton {
-  display: block;
-  margin: 0 auto 1.5rem;
   padding: 0.5rem 1rem;
   background-color: #28a745;
   color: white;
@@ -40,6 +43,39 @@
   font-size: 0.9rem;
 }
 
+.editButton {
+  padding: 0.5rem 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: none;
+  display: inline-block; /* Можно оставить для сохранения свойств ссылки */
+}
+.shelfDescription {
+ 
+  margin: 15px auto;
+  padding: 0 20px;
+  max-width: 100%;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: #444;
+  text-align: center;
+  word-break: break-word;
+  background-color: #f4f4f4;
+}
+
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+  .shelfDescription {
+    margin: 10px 0;
+    font-size: 1rem;
+    padding: 10px 15px;
+  }
+}
 .bookShelf {
   display: flex;
   flex-wrap: wrap;
@@ -48,12 +84,29 @@
   padding: 0;
   width: 100%;
   margin: 0 auto;
+  background: rgba(255, 255, 255, 0.9);
+  transition: background-image 0.3s ease;
+  padding: 30px 0; 
 }
 
 .bookWrapper {
   width: 120px;
   flex-shrink: 0;
+  z-index: 1;
 }
+
+
+/* Добавьте затемнение фона для лучшей читаемости */
+/* .bookShelf::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+} */
+
 
 .coverSection {
   height: 180px;
@@ -109,3 +162,71 @@
   text-decoration: none;
   color: inherit;
 }
+
+.bookWrapper {
+  position: relative;
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.arrowButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  color: #333;
+  padding:0;
+}
+
+.arrowButton:hover:not(:disabled) {
+  transform: translateY(-50%) scale(1.1);
+  background: white;
+}
+
+.arrowButton:disabled {
+  opacity: 0;
+  cursor: not-allowed;
+}
+
+.bookWrapper:hover .arrowButton {
+  opacity: 1;
+}
+
+.arrowLeft {
+  left: -10px;
+}
+
+.arrowRight {
+  right: -10px;
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+  .arrowButton {
+    width: 20px;
+    height: 20px;
+    font-size: 0.8rem;
+  }
+  
+  .arrowLeft {
+    left: -20px;
+  }
+  
+  .arrowRight {
+    right: -20px;
+  }
+}
+
+

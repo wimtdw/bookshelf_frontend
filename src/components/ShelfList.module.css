@@ -1,0 +1,149 @@
+.container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.authButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.authButton {
+    padding: 8px 16px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.heading {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.createShelfContainer {
+    margin-bottom: 30px;
+}
+
+
+
+.shelvesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Немного шире */
+    gap: 25px; /* Больше пространства между полками */
+    padding: 20px;
+}
+
+.shelfCard {
+    position: relative;
+    /*border-radius: 12px;*/ /* Более закругленные углы */
+    overflow: hidden;
+    /*box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);*/ /* Более выраженная тень */
+    background: linear-gradient(120deg, #bdf0c1 0%, #c2e9fb 100%); /* Более светлый фон */
+    min-height: 220px; /* Чуть выше */
+    transition: transform 0.2s, box-shadow 0.2s; /* Плавный переход тени */
+    text-decoration: none;
+    color: #333; /* Более темный текст */
+    border: 1px solid #ddd; /* Тонкая рамка */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Распределение контента по вертикали */
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.shelfCard:hover {
+    /* transform: translateY(-8px);  Больше подъема при наведении */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2); /* Еще больше тень при наведении */
+}
+
+.shelfContent {
+    padding: 20px;
+    /*background: none;*/ /* Убрали градиент */
+    /*color: white;*/ /* Изменили цвет текста */
+    z-index: 1;
+    text-align: left; /* Текст слева */
+    background-color: rgb(255, 255, 255); /* Полупрозрачный белый фон для текста */
+    color: #333;
+    border-top: 1px solid #eee; /* Тонкая линия сверху контента */
+}
+.shelfContainer {
+    position: relative;  /* Creates positioning context for absolute children */
+  }
+
+.shelfTitle {
+    margin: 0;
+    font-size: 1.3rem; /* Чуть больше заголовок */
+    font-weight: 600; /* Полужирный заголовок */
+    color: #222;
+}
+
+.bookCount {
+    margin: 8px 0 0; /* Больше отступ сверху */
+    font-size: 0.95rem; /* Чуть больше размер шрифта */
+    opacity: 0.7;
+}
+.imageContainer {
+    position: relative; /* Контекст для абсолютного позиционирования описания */
+    overflow: hidden; /* Обрезаем выходящий текст, если нужно */
+  }
+.shelfImage {
+    width: 100%;
+    height: 160px; /* Уменьшена высота изображения */
+    display: block;
+    object-fit: cover;
+    border-bottom: 1px solid #ddd; /* Тонкая линия под изображением */
+}
+.shelfDescription {
+    position: absolute; /* Абсолютно позиционируем поверх изображения */
+    top: 30px;      /* Размещаем внизу */
+    left: 3em;
+    width: 70%;        /* Занимает всю ширину изображения */
+    background-color: rgba(255, 255, 255, 0.625); /* Полупрозрачный фон для читаемости */
+    color: rgb(0, 0, 0);       /* Белый текст */
+    padding: 30px;
+    box-sizing: border-box; /* Чтобы padding не увеличивал ширину */
+    font-size: 1em;
+    text-align: center;
+  }
+
+
+.createButton {
+    display: block;
+    margin: 0 auto 1.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .deleteButton {
+    position: absolute;
+    top: 20px;
+    right: 15px;
+    padding: 5px 10px;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.shelfContainer:hover .deleteButton {
+    opacity: 1; /* Show on hover */
+    pointer-events: auto; /* Re-enable interactions */
+  }
+  .link{
+    text-decoration: none;
+  }
+  
+
