@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import styles from './ShelfList.module.css';
 import { useAuth } from './AuthContext';
 import AchievementButton from './AchievementButton';
+import Achievements from './Achievements';
 
 
 const ShelfList = () => {
@@ -13,6 +14,7 @@ const ShelfList = () => {
     const [shelves, setShelves] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
     const isOwner = user?.username === username;
+    const [showAchievements, setShowAchievements] = useState(false);
 
     const fetchCurrentUser = useCallback(async () => {
         if (!isAuthenticated) {
@@ -26,7 +28,7 @@ const ShelfList = () => {
             console.error("Ошибка при загрузке данных о пользователе:", error);
             setCurrentUser(null);
         }
-    }, [isAuthenticated]); // Memoize with isAuthenticated dependency
+    }, [isAuthenticated]);
 
 
 
@@ -48,7 +50,6 @@ const ShelfList = () => {
 
 
     useEffect(() => {
-        // Эффект для очистки данных при выходе
         if (!isAuthenticated) {
             // setShelves([]);
             setCurrentUser(null);
@@ -77,17 +78,27 @@ const ShelfList = () => {
 
     const getShelfLink = (shelfId) => {
         if (shelfId === 0) {
-            return `/${username}/`; // Используем username из URL
+            return `/${username}/`;
         }
         return `/${username}/?shelf_id=${shelfId}`;
     };
     return (
         <div className={styles.container}>
-            <AchievementButton />
+            <div>
+                <AchievementButton
+                    username={username}
+                    onClick={() => setShowAchievements(true)}
+                />
+
+                <Achievements
+                    isOpen={showAchievements}
+                    onClose={() => setShowAchievements(false)}
+                    username={username}
+                />
+            </div>
             <h1 className={styles.heading}>Полки {username}</h1>
 
             <div className={styles.buttonsContainer}>
-                {/* Исправленные ссылки */}
                 <Link to="/search" className={styles.editButton}>
                     Поиск
                 </Link>
@@ -100,11 +111,6 @@ const ShelfList = () => {
                     </button>
                 )}
             </div>
-            {/* <div className={styles.createShelfContainer}>
-                
-                
-            </div> */}
-
 
             <div className={`${styles.shelvesGrid} ${shouldCenter ? styles.centered : ''}`}>
                 {combinedShelves.map((shelf) => (

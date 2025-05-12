@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import styles from './BookForm.module.css';
+import { useAchievements } from './useAchievements';
 
 const BookForm = ({ initialData = {}, onSubmit }) => {
   const currentYear = new Date().getFullYear();
-  
+  const { unlockAchievement } = useAchievements();
+
   const [formData, setFormData] = useState({
     title: initialData.title || '',
     description: initialData.description || '',
     author: initialData.author || '',
-    publicationYear: initialData.publication_date || '',
+    publicationYear: initialData.publication_year || '',
     genres: initialData.genres || [],
     newGenre: '',
     cover: initialData.cover || ''
   });
-  
+
   const [searchDescription, setSearchDescription] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -21,10 +23,10 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
 
   useEffect(() => {
     if (initialData.genres) {
-      setFormData(prev => ({...prev, genres: initialData.genres}));
+      setFormData(prev => ({ ...prev, genres: initialData.genres }));
     }
     if (initialData.cover) {
-      setFormData(prev => ({...prev, cover: initialData.cover}));
+      setFormData(prev => ({ ...prev, cover: initialData.cover }));
       setUseCover(true);
     }
   }, [initialData.genres, initialData.cover]);
@@ -34,19 +36,19 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
       setError('Введите название книги для поиска');
       return;
     }
-    
+
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(
         `http://127.0.0.1:8000/api/v1/search?title=${encodeURIComponent(formData.title)}&search_description=${searchDescription}`
       );
-      
+
       if (!response.ok) throw new Error('Ошибка при поиске книги');
-      
+
       const data = await response.json();
-      
+
       setFormData(prev => ({
         ...prev,
         title: data.title || prev.title,
@@ -57,7 +59,7 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
         cover: data.cover
       }));
       setUseCover(!!data.cover);
-      
+
     } catch (err) {
       setFormData(prev => ({
         ...prev,
@@ -74,25 +76,36 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const submitData = {
       ...formData,
-      publication_date: formData.publicationYear,
+      publication_year: formData.publicationYear,
       genres: formData.genres
     };
-    
-    // Основное изменение: явный сброс обложки при отключенной галочке
+
     if (!useCover) {
       submitData.cover = '';
     }
-    
-    onSubmit(submitData);
+
+    try {
+      await onSubmit(submitData);
+
+      if (!initialData.id) {
+        try {
+          await unlockAchievement(2);
+        } catch (achievementError) {
+          console.error('Ошибка разблокировки ачивки:', achievementError);
+        }
+      }
+    } catch (error) {
+      // Ошибка обрабатывается в родительском компоненте
+    }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({...prev, [name]: value}));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleGenreKeyPress = (e) => {
@@ -138,8 +151,8 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
             />
             Искать описание (машинный перевод)
           </label>
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={handleSearch}
             disabled={loading}
           >
@@ -192,8 +205,8 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
             {formData.genres.map((genre, index) => (
               <div key={index} className={styles.genreTag}>
                 {genre}
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => removeGenre(index)}
                   className={styles.removeGenre}
                 >
@@ -215,9 +228,9 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
 
       {formData.cover && (
         <div className={styles.coverSection}>
-          <img 
-            src={formData.cover} 
-            alt="Обложка книги" 
+          <img
+            src={formData.cover}
+            alt="Обложка книги"
             className={styles.coverImage}
           />
           <label className={styles.coverCheckbox}>

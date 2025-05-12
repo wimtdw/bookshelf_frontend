@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './SignUp.module.css';
 import { useAuth } from './AuthContext';
+import { useAchievements } from './useAchievements';
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
@@ -13,34 +14,34 @@ const SignUp = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
+    const { unlockAchievement } = useAchievements();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             await axios.post('http://127.0.0.1:8000/auth/users/', formData);
-            navigate('/');
-            try {
-                const response = await axios.post('http://127.0.0.1:8000/auth/jwt/create/', {
-                    username: formData.username,
-                    password: formData.password
-                });
 
-                localStorage.setItem('access_token', response.data.access);
-                localStorage.setItem('refresh_token', response.data.refresh);
-                await login(); // Обновляем состояние аутентификации
-                navigate('/');
-            } catch (loginError) {
-                console.error('Ошибка автоматического входа:', loginError);
-                setError('Ошибка автоматического входа');
-                navigate('/signin');
+            const response = await axios.post('http://127.0.0.1:8000/auth/jwt/create/', {
+                username: formData.username,
+                password: formData.password
+            });
+
+            localStorage.setItem('access_token', response.data.access);
+            localStorage.setItem('refresh_token', response.data.refresh);
+            await login();
+
+            try {
+                await unlockAchievement('3');
+            } catch (achievementError) {
+                console.error('Ошибка разблокировки ачивки:', achievementError);
             }
+
+            navigate('/');
 
         } catch (error) {
             console.error('Ошибка регистрации:', error);
-            
             setError('Ошибка регистрации. Проверьте введенные данные');
         }
-
     };
 
     return (

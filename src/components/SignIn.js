@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom'; 
-import styles from './SignUp.module.css'; 
+import { useNavigate, Link } from 'react-router-dom';
+import styles from './SignUp.module.css';
 import { useAuth } from './AuthContext';
 
 const SignIn = () => {
-    
+
     const [credentials, setCredentials] = useState({
         username: '',
         password: '',
@@ -51,7 +51,7 @@ const SignIn = () => {
                 Еще не зарегистрированы? <Link to="/signup" className={styles.link}>Зарегистрироваться</Link>
             </div>
             <div className={styles.linkContainer}>
-            <Link to="/" className={styles.link} >На главную</Link>
+                <Link to="/" className={styles.link} >На главную</Link>
             </div>
         </div>
     );

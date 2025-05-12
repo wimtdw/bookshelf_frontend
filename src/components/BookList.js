@@ -5,6 +5,8 @@ import BookForm from './BookForm';
 import styles from './BookList.module.css';
 import { useAuth } from './AuthContext';
 import AchievementButton from './AchievementButton';
+import Achievements from './Achievements';
+import { useAchievements } from './useAchievements';
 
 
 const getRandomColor = (id) => {
@@ -21,18 +23,20 @@ const BookList = () => {
   const shelfId = searchParams.get('shelf_id');
   const [currentShelf, setCurrentShelf] = useState(null);
   const isOwner = user?.username === username;
+  const [showAchievements, setShowAchievements] = useState(false);
+  const { unlockAchievement } = useAchievements();
 
   const fetchBooks = useCallback(async () => {
     try {
       const params = { username };
       if (shelfId) params.shelf_id = shelfId;
-      
+
       const response = await axios.get('http://127.0.0.1:8000/api/v1/books/', { params });
       setBooks(response.data);
     } catch (error) {
       console.error("Error fetching books:", error);
     }
-  }, [shelfId, username]); // Добавляем username в зависимости
+  }, [shelfId, username]);
 
   useEffect(() => {
     fetchBooks();
@@ -88,11 +92,9 @@ const BookList = () => {
     const targetBook = books[targetIndex];
 
     try {
-      // Сохраняем исходный порядок на случай отката
       const originalOrderCurrent = currentBook.order;
       const originalOrderTarget = targetBook.order;
 
-      // Меняем порядок местами
       await axios.patch(`http://127.0.0.1:8000/api/v1/books/${currentBook.id}/`, {
         order: originalOrderTarget
       });
@@ -100,110 +102,124 @@ const BookList = () => {
         order: originalOrderCurrent
       });
 
-      // Обновляем список книг
       await fetchBooks();
+
+      try {
+        await unlockAchievement(4);
+      } catch (achievementError) {
+        console.error('Ошибка разблокировки ачивки:', achievementError);
+      }
     } catch (error) {
       console.error("Error moving book:", error);
     }
   };
   return (
     <div className={styles.container}>
-      <AchievementButton />
+      <div>
+        <AchievementButton
+          username={username}
+          onClick={() => setShowAchievements(true)}
+        />
+
+        <Achievements
+          isOpen={showAchievements}
+          onClose={() => setShowAchievements(false)}
+          username={username}
+        />
+      </div>
 
       <h1 className={styles.heading}>
         {currentShelf?.title || "Книги"} {username}
       </h1>
-      
-        <div className={styles.buttonsContainer}>
-          {/* Исправленные ссылки */}
-          <Link to="/search" className={styles.editButton}>
-            Поиск
-          </Link>
-          <Link to={`/${username}/shelves`} className={styles.editButton}>
-            Полки
-          </Link>
 
-          {isAuthenticated && !currentShelf && isOwner && (
-            <button className={styles.createButton} onClick={toggleFormVisibility}>
-              Добавить книгу
-            </button>
-          )}
+      <div className={styles.buttonsContainer}>
+        <Link to="/search" className={styles.editButton}>
+          Поиск
+        </Link>
+        <Link to={`/${username}/shelves`} className={styles.editButton}>
+          Полки
+        </Link>
 
-          {isAuthenticated && currentShelf && isOwner && (
-            <Link
-              to={`/${username}/shelves/edit/${currentShelf.id}`}
-              className={styles.editButton}
-            >
-              Редактировать полку
-            </Link>
-          )}
-        </div>
-      
+        {isAuthenticated && !currentShelf && isOwner && (
+          <button className={styles.createButton} onClick={toggleFormVisibility}>
+            Добавить книгу
+          </button>
+        )}
+
+        {isAuthenticated && currentShelf && isOwner && (
+          <Link
+            to={`/${username}/shelves/edit/${currentShelf.id}`}
+            className={styles.editButton}
+          >
+            Редактировать полку
+          </Link>
+        )}
+      </div>
+
       {isFormVisible && <BookForm onSubmit={handleFormSubmit} />}
       {!isFormVisible && (
         <>
-      {currentShelf?.description && (
-        <div className={styles.shelfDescription}>
-          {currentShelf.description}
-        </div>
-      )}
-      <div
-        className={styles.bookShelf}
-        style={{
-          backgroundImage: currentShelf?.background_image
-            ? `url(${currentShelf.background_image})`
-            : undefined,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
-        {books.map((book, index) => (
-          <div key={book.id} className={styles.bookWrapper}>
-            {/* Кнопки перемещения */}
-            <button
-              className={`${styles.arrowButton} ${styles.arrowLeft}`}
-              onClick={() => handleMove(book.id, 'left')}
-              disabled={index === 0 || !isAuthenticated || user?.username !== username}
-              aria-label="Move left"
-            >
-              ←
-            </button>
+          {currentShelf?.description && (
+            <div className={styles.shelfDescription}>
+              {currentShelf.description}
+            </div>
+          )}
+          <div
+            className={styles.bookShelf}
+            style={{
+              backgroundImage: currentShelf?.background_image
+                ? `url(${currentShelf.background_image})`
+                : undefined,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          >
+            {books.map((book, index) => (
+              <div key={book.id} className={styles.bookWrapper}>
+                <button
+                  className={`${styles.arrowButton} ${styles.arrowLeft}`}
+                  onClick={() => handleMove(book.id, 'left')}
+                  disabled={index === 0 || !isAuthenticated || user?.username !== username}
+                  aria-label="Move left"
+                >
+                  ←
+                </button>
 
-            <Link to={`/${username}/books/${book.id}`} className={styles.bookLink}>
-              <div className={styles.coverSection}>
-                {book.cover ? (
-                  <img
-                    src={book.cover}
-                    alt="Обложка книги"
-                    className={styles.coverImage}
-                  />
-                ) : (
-                  <div
-                    className={styles.coverPlaceholder}
-                    style={{ backgroundColor: getRandomColor(book.id) }}
-                  >
-                    <div className={styles.placeholderContent}>
-                      <h3>{book.title}</h3>
-                      <p>{book.author}</p>
-                    </div>
+                <Link to={`/${username}/books/${book.id}`} className={styles.bookLink}>
+                  <div className={styles.coverSection}>
+                    {book.cover ? (
+                      <img
+                        src={book.cover}
+                        alt="Обложка книги"
+                        className={styles.coverImage}
+                      />
+                    ) : (
+                      <div
+                        className={styles.coverPlaceholder}
+                        style={{ backgroundColor: getRandomColor(book.id) }}
+                      >
+                        <div className={styles.placeholderContent}>
+                          <h3>{book.title}</h3>
+                          <p>{book.author}</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
+                </Link>
+                <button
+                  className={`${styles.arrowButton} ${styles.arrowRight}`}
+                  onClick={() => handleMove(book.id, 'right')}
+                  disabled={index === books.length - 1 || !isAuthenticated || user?.username !== username}
+                  aria-label="Move right"
+                >
+                  →
+                </button>
               </div>
-            </Link>
-            <button
-              className={`${styles.arrowButton} ${styles.arrowRight}`}
-              onClick={() => handleMove(book.id, 'right')}
-              disabled={index === books.length - 1 || !isAuthenticated || user?.username !== username}
-              aria-label="Move right"
-            >
-              →
-            </button>
+
+            ))}
           </div>
-          
-        ))}
-      </div>
-      </>
+        </>
       )}
     </div>
   );

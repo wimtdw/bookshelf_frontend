@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import BookList from './BookList'; 
+import BookList from './BookList';
 
 const ParentComponent = () => {
   const [books, setBooks] = useState([]);

@@ -14,6 +14,8 @@ import AuthButtons from './components/AuthButtons';
 import HomeRedirect from './components/HomeRedirect';
 import Search from './components/Search';
 import Achievements from './components/Achievements';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 axios.interceptors.request.use(config => {
   const token = localStorage.getItem('access_token');
@@ -23,6 +25,7 @@ axios.interceptors.request.use(config => {
   return config;
 });
 
+
 const store = createAppStore();
 
 function App() {
@@ -30,6 +33,17 @@ function App() {
     <Provider store={store}>
       <AuthProvider>
         <div className="App">
+        <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
           <Router>
             <AuthButtons />
             <Routes>

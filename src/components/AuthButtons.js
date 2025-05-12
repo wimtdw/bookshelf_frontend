@@ -1,4 +1,3 @@
-// components/AuthButtons.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -11,16 +10,16 @@ const AuthButtons = () => {
     <div className={styles.authButtons}>
       {isAuthenticated ? (
         <div>
-        {user && (
-          <div className={styles.username}>User: {user.username}</div>
-        )}
-        <Link to="/" className={styles.authButton}>
+          {user && (
+            <div className={styles.username}>User: {user.username}</div>
+          )}
+          <Link to="/" className={styles.authButton}>
             Мои книги
           </Link>
-        <button onClick={logout} className={styles.authButtonLink}>
-          Выйти
-        </button>
-        
+          <button onClick={logout} className={styles.authButtonLink}>
+            Выйти
+          </button>
+
         </div>
       ) : (
         <>

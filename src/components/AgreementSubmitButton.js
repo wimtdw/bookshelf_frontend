@@ -22,7 +22,7 @@ const AgreementSubmitButton = () => {
       value="Submit"
       disabled={!agreed}
       onClick={handleClick}
-      className={styles.submitButton} 
+      className={styles.submitButton}
     />
   );
 };

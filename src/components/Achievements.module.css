@@ -1,68 +1,156 @@
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .achievement {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    transition: transform 0.2s ease;
-  }
-  
-  .achievement:hover {
-    transform: translateY(-2px);
-  }
-  
-  .content {
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modalContent {
+    background: white;
+    width: 90%;
+    max-width: 800px;
+    margin-top: 50px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: slideDown 0.3s ease;
+    padding-right: 17px;
+    box-sizing: content-box;
+}
+
+.modalContent::-webkit-scrollbar {
+    width: 8px;
+    background: transparent;
+}
+
+.modalContent::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+.modalContent {
+    scrollbar-gutter: stable;
+}
+
+@supports (scrollbar-width: thin) {
+    .modalContent {
+        scrollbar-width: auto;
+        scrollbar-color: #ccc transparent;
+    }
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 15px;
-  }
-  
-  .emoji {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+}
+
+.closeButton {
+    background: none;
+    border: none;
     font-size: 2rem;
-    opacity: 1;
-    transition: opacity 0.2s ease;
-  }
-  
-  .grayscale {
+    cursor: pointer;
+    padding: 0 10px;
+    color: #666;
+    line-height: 1;
+}
+
+.closeButton:hover {
+    color: #333;
+}
+
+.achievementsList {
+    padding: 20px;
+}
+
+.achievementItem {
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    background: #f8f8f8;
+}
+
+.achievementContent {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.emoji {
+    font-size: 2rem;
+}
+
+.grayscale {
     filter: grayscale(100%);
     opacity: 0.6;
-  }
-  
-  .info {
+}
+
+.achievementInfo {
     flex-grow: 1;
-  }
-  
-  .title {
+}
+
+.title {
     margin: 0;
     color: #000;
-  }
-  
-  .inactiveTitle {
+}
+
+.inactiveTitle {
     margin: 0;
     color: #666;
-  }
-  
-  .description {
+}
+
+.description {
     margin: 8px 0;
     color: #666;
     font-size: 0.95rem;
-  }
-  
-  .status {
+}
+
+.status {
     margin: 0;
     font-size: 0.9em;
     font-style: italic;
-  }
-  
-  .achieved {
+}
+
+.achieved {
     color: green;
-  }
-  
-  .notAchieved {
+}
+
+.notAchieved {
     color: #999;
-  }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

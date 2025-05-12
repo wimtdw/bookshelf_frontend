@@ -16,7 +16,7 @@ const HomeRedirect = () => {
         }
     }, [isAuthenticated, user, isLoading, navigate]);
 
-    return null; // Не показываем ничего во время редиректа
+    return null;
 };
 
 export default HomeRedirect;

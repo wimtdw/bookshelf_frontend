@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import styles from './ShelfForm.module.css';
 import { useAuth } from './AuthContext';
+import { useAchievements } from './useAchievements';
 
 const ShelfForm = () => {
   const navigate = useNavigate();
@@ -20,17 +21,16 @@ const ShelfForm = () => {
   const [error, setError] = useState(null);
   const { username } = useParams();
   const { user } = useAuth();
+  const { unlockAchievement } = useAchievements();
 
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        // Загрузка книг
         const params = {};
         params.username = username;
         const booksResponse = await axios.get('http://127.0.0.1:8000/api/v1/books/', { params });
         setAvailableBooks(booksResponse?.data || []);
 
-        // Загрузка фонов
         const backgroundsResponse = await axios.get('http://127.0.0.1:8000/api/v1/backgrounds/');
         const backgrounds = backgroundsResponse?.data?.map(bg => ({
           id: bg.id,
@@ -38,7 +38,6 @@ const ShelfForm = () => {
         })) || [];
         setBackgroundOptions(backgrounds);
 
-        // Если есть ID - загружаем данные полки
         if (id) {
           const shelfResponse = await axios.get(`http://127.0.0.1:8000/api/v1/shelves/${id}/`);
           const shelfData = shelfResponse?.data || {};
@@ -46,9 +45,7 @@ const ShelfForm = () => {
           setFormData({
             title: shelfData.title || '',
             description: shelfData.description || '',
-            // Преобразуем ID книг в строки
             books: shelfData.books?.map(book => String(book.id)) || [],
-            // Убедимся что URL фона корректный
             background_image: shelfData.background_image?.url || ''
           });
         }
@@ -78,6 +75,15 @@ const ShelfForm = () => {
       };
 
       await axios[method](url, dataToSend);
+
+      if (!id) {
+        try {
+          await unlockAchievement(1);
+        } catch (achievementError) {
+          console.error('Ошибка разблокировки ачивки:', achievementError);
+        }
+      }
+
       navigate(`/${user?.username}/shelves`);
     } catch (err) {
       setError(err.response?.data || err.message || 'Ошибка сохранения полки');
@@ -102,7 +108,7 @@ const ShelfForm = () => {
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <div>
-      <Link to={`/${user?.username}/shelves`} className={styles.backButton}>
+        <Link to={`/${user?.username}/shelves`} className={styles.backButton}>
           &lt; Назад к полкам
         </Link>
         <label>Название полки:</label>
@@ -135,7 +141,7 @@ const ShelfForm = () => {
           className={styles.booksSelect}
         >
           {availableBooks?.map(book => (
-            <option key={book.id} value={String(book.id)}> 
+            <option key={book.id} value={String(book.id)}>
               {book.title} ({book.author})
             </option>
           ))}
