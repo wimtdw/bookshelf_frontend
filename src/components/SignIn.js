@@ -20,7 +20,7 @@ const SignIn = () => {
             const response = await axios.post('http://127.0.0.1:8000/auth/jwt/create/', credentials);
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
-            login();
+            await login();
             navigate('/');
         } catch (error) {
             console.error('Ошибка входа:', error);

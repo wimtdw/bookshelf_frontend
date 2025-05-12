@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import styles from './ShelfForm.module.css';
+import { useAuth } from './AuthContext';
 
 const ShelfForm = () => {
   const navigate = useNavigate();
@@ -17,12 +18,16 @@ const ShelfForm = () => {
   const [backgroundOptions, setBackgroundOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { username } = useParams();
+  const { user } = useAuth();
 
   useEffect(() => {
     const loadInitialData = async () => {
       try {
         // Загрузка книг
-        const booksResponse = await axios.get('http://127.0.0.1:8000/api/v1/books/');
+        const params = {};
+        params.username = username;
+        const booksResponse = await axios.get('http://127.0.0.1:8000/api/v1/books/', { params });
         setAvailableBooks(booksResponse?.data || []);
 
         // Загрузка фонов
@@ -53,7 +58,7 @@ const ShelfForm = () => {
     };
 
     loadInitialData();
-  }, [id]);
+  }, [id, username]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,7 +78,7 @@ const ShelfForm = () => {
       };
 
       await axios[method](url, dataToSend);
-      navigate('/shelves');
+      navigate(`/${user?.username}/shelves`);
     } catch (err) {
       setError(err.response?.data || err.message || 'Ошибка сохранения полки');
     } finally {
@@ -97,7 +102,7 @@ const ShelfForm = () => {
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <div>
-        <Link to="/shelves" className={styles.backButton}>
+      <Link to={`/${user?.username}/shelves`} className={styles.backButton}>
           &lt; Назад к полкам
         </Link>
         <label>Название полки:</label>
@@ -130,7 +135,7 @@ const ShelfForm = () => {
           className={styles.booksSelect}
         >
           {availableBooks?.map(book => (
-            <option key={book.id} value={String(book.id)}> {/* Преобразуем значение в строку */}
+            <option key={book.id} value={String(book.id)}> 
               {book.title} ({book.author})
             </option>
           ))}

@@ -122,3 +122,9 @@ textarea {
   font-size: 0.9rem;
 }
 
+.createButton:hover {
+  background-color: #218838;
+}
+.editButton:hover {
+  background-color: #218838;
+}

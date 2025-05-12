@@ -1,0 +1,86 @@
+/* Search.module.css */
+.outerContainer {
+    position: relative; /* Для позиционирования выпадающего списка */
+    width: 300px;
+    margin: 5rem auto;
+  }
+.container {
+    position: relative; /* Для позиционирования выпадающего списка */
+    width: 300px;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none; /* Убирает обводку при фокусе */
+    box-sizing: border-box; /* Важно, чтобы padding не увеличивал ширину */
+  }
+  
+  .input:focus {
+    border-color: #007bff; /* Более заметная обводка при фокусе */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Добавьте тень при фокусе */
+  }
+  
+  
+  .loading {
+    color: #888;
+    font-style: italic;
+    margin-top: 5px;
+  }
+  
+  .resultsList {
+    position: absolute; /* Позиционируем абсолютно относительно контейнера */
+    top: 100%; /* Размещаем сразу под инпутом */
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none; /* Убираем верхнюю границу, чтобы выглядело цельно */
+    border-radius: 0 0 5px 5px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 10; /* Убедитесь, что список поверх других элементов */
+  }
+  
+  .resultsList li {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .resultsList li:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .randomButton {
+    margin: 0;
+    padding: 0.5rem 1rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.2s ease;
+    font-family: inherit;
+}
+.randomButton:hover {
+    background-color: #218838;
+}
+
+
+
+
+  .emoji {
+    font-size: 40px;
+    display: block;
+    filter: grayscale(100%) contrast(50%); 
+  }
+  

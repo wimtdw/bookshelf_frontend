@@ -56,6 +56,12 @@
   text-decoration: none;
   display: inline-block; /* Можно оставить для сохранения свойств ссылки */
 }
+.createButton:hover {
+  background-color: #218838;
+}
+.editButton:hover {
+  background-color: #218838;
+}
 .shelfDescription {
  
   margin: 15px auto;

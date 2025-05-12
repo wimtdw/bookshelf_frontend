@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useParams } from 'react-router-dom';
 import BookForm from './BookForm';
 import styles from './BookList.module.css';
 import { useAuth } from './AuthContext';
+import AchievementButton from './AchievementButton';
 
 
 const getRandomColor = (id) => {
@@ -14,27 +15,24 @@ const getRandomColor = (id) => {
 const BookList = () => {
   const [books, setBooks] = useState([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const { isAuthenticated } = useAuth();
-  // const [isAuthenticated, setIsAuthenticated] = useState(
-  //   !!localStorage.getItem('access_token')
-  // );
+  const { isAuthenticated, user } = useAuth();
+  const { username } = useParams();
   const [searchParams] = useSearchParams();
   const shelfId = searchParams.get('shelf_id');
   const [currentShelf, setCurrentShelf] = useState(null);
+  const isOwner = user?.username === username;
 
-  // Мемоизируем fetchBooks с useCallback
   const fetchBooks = useCallback(async () => {
     try {
-      const params = {};
-      if (shelfId) {
-        params.shelf_id = shelfId;
-      }
+      const params = { username };
+      if (shelfId) params.shelf_id = shelfId;
+      
       const response = await axios.get('http://127.0.0.1:8000/api/v1/books/', { params });
       setBooks(response.data);
     } catch (error) {
       console.error("Error fetching books:", error);
     }
-  }, [shelfId]); // Добавляем shelfId в зависимости
+  }, [shelfId, username]); // Добавляем username в зависимости
 
   useEffect(() => {
     fetchBooks();
@@ -44,7 +42,9 @@ const BookList = () => {
     const fetchShelf = async () => {
       if (shelfId) {
         try {
-          const response = await axios.get(`http://127.0.0.1:8000/api/v1/shelves/${shelfId}/`);
+          const response = await axios.get(`http://127.0.0.1:8000/api/v1/shelves/${shelfId}/`, {
+            params: { username }
+          });
           setCurrentShelf(response.data);
         } catch (error) {
           console.error("Error fetching shelf:", error);
@@ -55,11 +55,11 @@ const BookList = () => {
     };
 
     fetchShelf();
-  }, [shelfId]);
+  }, [shelfId, username]);
 
   useEffect(() => {
     if (!isAuthenticated) {
-      setBooks([]);
+      // setBooks([]);
     }
   }, [isAuthenticated]);
 
@@ -77,6 +77,7 @@ const BookList = () => {
     setIsFormVisible(prev => !prev);
   };
   const handleMove = async (bookId, direction) => {
+    if (!user || user.username !== username) return;
     const currentIndex = books.findIndex(book => book.id === bookId);
     if (currentIndex === -1) return;
 
@@ -107,32 +108,37 @@ const BookList = () => {
   };
   return (
     <div className={styles.container}>
-      
+      <AchievementButton />
 
       <h1 className={styles.heading}>
-        {currentShelf?.title || "Книги"}
+        {currentShelf?.title || "Книги"} {username}
       </h1>
-      {isAuthenticated && (
+      
         <div className={styles.buttonsContainer}>
-          <Link to={`/shelves`} className={styles.editButton}>
-            Мои полки
+          {/* Исправленные ссылки */}
+          <Link to="/search" className={styles.editButton}>
+            Поиск
+          </Link>
+          <Link to={`/${username}/shelves`} className={styles.editButton}>
+            Полки
           </Link>
 
-          {!currentShelf && (
+          {isAuthenticated && !currentShelf && isOwner && (
             <button className={styles.createButton} onClick={toggleFormVisibility}>
               Добавить книгу
-            </button>)}
+            </button>
+          )}
 
-          {currentShelf && (
+          {isAuthenticated && currentShelf && isOwner && (
             <Link
-              to={`/shelves/edit/${currentShelf.id}`}
+              to={`/${username}/shelves/edit/${currentShelf.id}`}
               className={styles.editButton}
             >
               Редактировать полку
             </Link>
           )}
         </div>
-      )}
+      
       {isFormVisible && <BookForm onSubmit={handleFormSubmit} />}
       {!isFormVisible && (
         <>
@@ -158,13 +164,13 @@ const BookList = () => {
             <button
               className={`${styles.arrowButton} ${styles.arrowLeft}`}
               onClick={() => handleMove(book.id, 'left')}
-              disabled={index === 0}
+              disabled={index === 0 || !isAuthenticated || user?.username !== username}
               aria-label="Move left"
             >
               ←
             </button>
 
-            <Link to={`/books/${book.id}`} className={styles.bookLink}>
+            <Link to={`/${username}/books/${book.id}`} className={styles.bookLink}>
               <div className={styles.coverSection}>
                 {book.cover ? (
                   <img
@@ -188,7 +194,7 @@ const BookList = () => {
             <button
               className={`${styles.arrowButton} ${styles.arrowRight}`}
               onClick={() => handleMove(book.id, 'right')}
-              disabled={index === books.length - 1}
+              disabled={index === books.length - 1 || !isAuthenticated || user?.username !== username}
               aria-label="Move right"
             >
               →

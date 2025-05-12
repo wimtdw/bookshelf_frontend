@@ -27,7 +27,7 @@ const SignUp = () => {
 
                 localStorage.setItem('access_token', response.data.access);
                 localStorage.setItem('refresh_token', response.data.refresh);
-                login(); // Обновляем состояние аутентификации
+                await login(); // Обновляем состояние аутентификации
                 navigate('/');
             } catch (loginError) {
                 console.error('Ошибка автоматического входа:', loginError);

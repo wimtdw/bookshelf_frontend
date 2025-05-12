@@ -1,18 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import styles from './ShelfList.module.css';
 import { useAuth } from './AuthContext';
+import AchievementButton from './AchievementButton';
+
 
 const ShelfList = () => {
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, user } = useAuth();
+    const { username } = useParams();
     const [shelves, setShelves] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
-    
+    const isOwner = user?.username === username;
 
-
-    const fetchCurrentUser = async () => {
+    const fetchCurrentUser = useCallback(async () => {
+        if (!isAuthenticated) {
+            setCurrentUser(null);
+            return;
+        }
         try {
             const response = await axios.get('http://127.0.0.1:8000/auth/users/me/');
             setCurrentUser(response.data);
@@ -20,33 +26,40 @@ const ShelfList = () => {
             console.error("Ошибка при загрузке данных о пользователе:", error);
             setCurrentUser(null);
         }
-    };
+    }, [isAuthenticated]); // Memoize with isAuthenticated dependency
 
-    const fetchShelves = async () => {
+
+
+    const fetchShelves = useCallback(async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/v1/shelves/');
+            const params = {};
+            params.username = username;
+            const response = await axios.get('http://127.0.0.1:8000/api/v1/shelves/', { params });
             setShelves(response.data);
         } catch (error) {
             console.error("Error fetching shelves:", error);
         }
-    };
+    }, [username]);
 
     useEffect(() => {
         fetchShelves();
-        fetchCurrentUser();
-    }, []);
+        if (isAuthenticated) fetchCurrentUser();
+    }, [fetchShelves, fetchCurrentUser, isAuthenticated]);
+
 
     useEffect(() => {
         // Эффект для очистки данных при выходе
         if (!isAuthenticated) {
-            setShelves([]);
+            // setShelves([]);
             setCurrentUser(null);
         }
     }, [isAuthenticated]);
 
     const handleDeleteShelf = async (shelfId) => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/v1/shelves/${shelfId}/`);
+            const params = { username };
+            params.username = username;
+            await axios.delete(`http://127.0.0.1:8000/api/v1/shelves/${shelfId}/`, { params });
             fetchShelves();
         } catch (error) {
             console.error("Ошибка при удалении полки:", error);
@@ -61,27 +74,44 @@ const ShelfList = () => {
 
     const combinedShelves = [allBooksShelf, ...shelves];
     const shouldCenter = combinedShelves.length === 1 && combinedShelves[0].id === 0;
+
+    const getShelfLink = (shelfId) => {
+        if (shelfId === 0) {
+            return `/${username}/`; // Используем username из URL
+        }
+        return `/${username}/?shelf_id=${shelfId}`;
+    };
     return (
         <div className={styles.container}>
-            <h1 className={styles.heading}>Мои полки</h1>
+            <AchievementButton />
+            <h1 className={styles.heading}>Полки {username}</h1>
 
-            {isAuthenticated && (
-                <div className={styles.createShelfContainer}>
+            <div className={styles.buttonsContainer}>
+                {/* Исправленные ссылки */}
+                <Link to="/search" className={styles.editButton}>
+                    Поиск
+                </Link>
+                {isAuthenticated && isOwner && (
                     <button
                         className={styles.createButton}
-                        onClick={() => navigate('/shelves/create')}
+                        onClick={() => navigate(`/${username}/shelves/create`)}
                     >
                         Создать полку
                     </button>
-                </div>
-            )}
+                )}
+            </div>
+            {/* <div className={styles.createShelfContainer}>
+                
+                
+            </div> */}
+
 
             <div className={`${styles.shelvesGrid} ${shouldCenter ? styles.centered : ''}`}>
                 {combinedShelves.map((shelf) => (
                     <div key={shelf.id} className={styles.shelfContainer}>
                         <Link
                             className={styles.link}
-                            to={shelf.id === 0 ? "/" : `/?shelf_id=${shelf.id}`}
+                            to={getShelfLink(shelf.id)}
                         >
                             <div className={styles.shelfCard}>
                                 <div className={styles.shelfContent}>

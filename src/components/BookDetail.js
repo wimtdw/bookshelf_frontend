@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import BookForm from './BookForm';
 import styles from './BookDetail.module.css';
+import { useAuth } from './AuthContext';
 
 const BookDetail = () => {
     const { id } = useParams();
@@ -10,7 +11,8 @@ const BookDetail = () => {
     const [book, setBook] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
-
+    const { isAuthenticated, user } = useAuth();
+    const { username } = useParams();
     const getRandomColor = (id) => {
         const colors = ['#FFB3BA', '#BAFFC9', '#BAE1FF', '#FFDFBA', '#D0BAFF'];
         return colors[id % colors.length];
@@ -19,7 +21,9 @@ const BookDetail = () => {
     useEffect(() => {
         const fetchBook = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/v1/books/${id}/`);
+                const params = { username };
+                params.username = username;
+                const response = await axios.get(`http://127.0.0.1:8000/api/v1/books/${id}/`, { params });
                 setBook(response.data);
             } catch (error) {
                 console.error("Ошибка при загрузке книги:", error);
@@ -27,6 +31,10 @@ const BookDetail = () => {
         };
 
         const fetchCurrentUser = async () => {
+            if (!isAuthenticated) {
+                setCurrentUser(null);
+                return;
+            }
             try {
                 const response = await axios.get('http://127.0.0.1:8000/auth/users/me/');
                 setCurrentUser(response.data);
@@ -38,12 +46,14 @@ const BookDetail = () => {
 
         fetchBook();
         fetchCurrentUser();
-    }, [id]);
+    }, [id, isAuthenticated, username]);
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/v1/books/${id}/`);
-            navigate('/');
+            const params = { username };
+            params.username = username;
+            await axios.delete(`http://127.0.0.1:8000/api/v1/books/${id}/`, { params });
+            navigate(`/${username}/`);
         } catch (error) {
             console.error("Ошибка при удалении книги:", error);
         }
@@ -60,7 +70,7 @@ const BookDetail = () => {
             } else {
                 await axios.post('http://127.0.0.1:8000/api/v1/books/', data);
             }
-            navigate('/');
+            navigate(`/${user.username}/`);
         } catch (error) {
             console.error("Ошибка при сохранении книги:", error);
         }
@@ -73,14 +83,14 @@ const BookDetail = () => {
 
     const canEdit = (book) => {
         if (!currentUser) return false;
-        return currentUser.is_staff || book.entry_author === currentUser.username;
+        return book.entry_author === currentUser.username;
     };
 
     if (!book) return <div>Загрузка...</div>;
 
     return (
         <div className={styles.container}>
-            <Link to="/" className={styles.backButton}>
+            <Link to={`/${username}/`} className={styles.backButton}>
                 &lt; Назад к списку
             </Link>
             {isEditing ? (
@@ -128,7 +138,7 @@ const BookDetail = () => {
                             <p><b>Год публикации:</b> {book.publication_year || 'отсутствует'}</p>
                             <p><b>Жанры:</b> {book.genres?.length > 0 ? book.genres.join(', ') : 'отсутствует'}</p>
                             <p><b>Описание:</b> {book.description || 'отсутствует'}</p>
-                            {/* <p><b>Добавлено пользователем:</b> {book.entry_author}</p> */}
+                            <p><b>Добавлено пользователем:</b> {book.entry_author}</p>
                         </div>
 
 

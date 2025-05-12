@@ -19,7 +19,24 @@
     transition: background-color 0.2s ease;
     font-family: inherit;
 }
-
+.authButtonLink {
+    margin-left: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.2s ease;
+    font-family: inherit;
+}
 .authButton:hover {
     background-color: #218838;
+}
+.username{
+    display:inline;
+    margin: 0 1rem;
 }
