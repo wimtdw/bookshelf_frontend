@@ -72,3 +72,10 @@
     color: red;
     margin-bottom: 10px;
 }
+
+.label{
+    font-size: 0.9rem;
+    text-decoration: none;
+    color:rgb(99, 99, 99);
+    font-weight: 400;
+}

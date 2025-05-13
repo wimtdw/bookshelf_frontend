@@ -49,18 +49,21 @@ const SignUp = () => {
             <h2 className={styles.heading}>Регистрация</h2>
             {error && <div className={styles.error}>{error}</div>}
             <form onSubmit={handleSubmit} className={styles.form}>
+            <label className={styles.label}>Можно использовать латинские буквы, без пробелов. Если username занят, зарегистрироваться тоже не получится</label>
                 <input
                     type="text"
                     placeholder="Имя пользователя"
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                     className={styles.input}
                 />
+                <label className={styles.label}>Например, "email@email.com"</label>
                 <input
                     type="email"
                     placeholder="Email"
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className={styles.input}
                 />
+                <label className={styles.label}>Минимум 8 символов</label>
                 <input
                     type="password"
                     placeholder="Пароль"
