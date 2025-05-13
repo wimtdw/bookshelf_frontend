@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import axiosInstance from '../api/axios'; 
 
 const AuthContext = createContext();
 
@@ -18,20 +19,12 @@ export const AuthProvider = ({ children }) => {
 
     const fetchUser = useCallback(async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/auth/users/me/', {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}`
-                }
-            });
-
-            if (response.ok) {
-                const userData = await response.json();
-                setUser(userData);
-            } else {
+            const response = await axiosInstance.get('auth/users/me/');
+            setUser(response.data);
+        } catch (error) {
+            if (error.response?.status === 401) {
                 logout();
             }
-        } catch (error) {
-            logout();
         } finally {
             setIsLoading(false);
         }

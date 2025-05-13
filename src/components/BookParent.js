@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 import BookList from './BookList';
 
 const ParentComponent = () => {
@@ -7,7 +7,7 @@ const ParentComponent = () => {
 
   useEffect(() => {
     const fetchBooks = async () => {
-      const response = await axios.get('http://localhost:8000/api/books/');
+      const response = await axiosInstance.get('api/books/');
       setBooks(response.data);
     };
     fetchBooks();

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styles from './ShelfList.module.css';
 import { useAuth } from './AuthContext';
@@ -22,7 +22,7 @@ const ShelfList = () => {
             return;
         }
         try {
-            const response = await axios.get('http://127.0.0.1:8000/auth/users/me/');
+            const response = await axiosInstance.get('auth/users/me/');
             setCurrentUser(response.data);
         } catch (error) {
             console.error("Ошибка при загрузке данных о пользователе:", error);
@@ -36,7 +36,7 @@ const ShelfList = () => {
         try {
             const params = {};
             params.username = username;
-            const response = await axios.get('http://127.0.0.1:8000/api/v1/shelves/', { params });
+            const response = await axiosInstance.get('api/v1/shelves/', { params });
             setShelves(response.data);
         } catch (error) {
             console.error("Error fetching shelves:", error);
@@ -60,7 +60,7 @@ const ShelfList = () => {
         try {
             const params = { username };
             params.username = username;
-            await axios.delete(`http://127.0.0.1:8000/api/v1/shelves/${shelfId}/`, { params });
+            await axiosInstance.delete(`api/v1/shelves/${shelfId}/`, { params });
             fetchShelves();
         } catch (error) {
             console.error("Ошибка при удалении полки:", error);

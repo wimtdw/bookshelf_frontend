@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 import { toast } from 'react-toastify';
 import { useAuth } from './AuthContext';
 
@@ -8,11 +8,11 @@ export const useAchievements = () => {
   const unlockedAchievements = useRef(new Set());
 
   const unlockAchievement = async (achievementId) => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated && achievementId !== 3) return;
 
     try {
-      const response = await axios.patch(
-        `http://127.0.0.1:8000/api/v1/achievements/${achievementId}/`
+      const response = await axiosInstance.patch(
+        `api/v1/achievements/${achievementId}/`
       );
 
       if (response.data.is_new) {

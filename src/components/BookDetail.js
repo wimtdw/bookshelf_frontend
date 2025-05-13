@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import BookForm from './BookForm';
 import styles from './BookDetail.module.css';
@@ -23,7 +23,7 @@ const BookDetail = () => {
             try {
                 const params = { username };
                 params.username = username;
-                const response = await axios.get(`http://127.0.0.1:8000/api/v1/books/${id}/`, { params });
+                const response = await axiosInstance.get(`api/v1/books/${id}/`, { params });
                 setBook(response.data);
             } catch (error) {
                 console.error("Ошибка при загрузке книги:", error);
@@ -36,7 +36,7 @@ const BookDetail = () => {
                 return;
             }
             try {
-                const response = await axios.get('http://127.0.0.1:8000/auth/users/me/');
+                const response = await axiosInstance.get('auth/users/me/');
                 setCurrentUser(response.data);
             } catch (error) {
                 console.error("Ошибка при загрузке данных о пользователе:", error);
@@ -52,7 +52,7 @@ const BookDetail = () => {
         try {
             const params = { username };
             params.username = username;
-            await axios.delete(`http://127.0.0.1:8000/api/v1/books/${id}/`, { params });
+            await axiosInstance.delete(`api/v1/books/${id}/`, { params });
             navigate(`/${username}/`);
         } catch (error) {
             console.error("Ошибка при удалении книги:", error);
@@ -66,9 +66,9 @@ const BookDetail = () => {
     const handleFormSubmit = async (data) => {
         try {
             if (isEditing) {
-                await axios.patch(`http://127.0.0.1:8000/api/v1/books/${id}/`, data);
+                await axiosInstance.patch(`api/v1/books/${id}/`, data);
             } else {
-                await axios.post('http://127.0.0.1:8000/api/v1/books/', data);
+                await axiosInstance.post('api/v1/books/', data);
             }
             navigate(`/${user.username}/`);
         } catch (error) {

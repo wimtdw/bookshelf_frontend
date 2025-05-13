@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 import styles from './Achievements.module.css';
 
 const Achievements = ({ isOpen, onClose, username }) => {
@@ -12,8 +12,8 @@ const Achievements = ({ isOpen, onClose, username }) => {
 
         const fetchAchievements = async () => {
             try {
-                const response = await axios.get(
-                    'http://127.0.0.1:8000/api/v1/achievements/'
+                const response = await axiosInstance.get(
+                    'api/v1/achievements/'
                 );
                 setAchievements(response.data);
             } catch (err) {

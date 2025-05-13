@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from './SignUp.module.css';
 import { useAuth } from './AuthContext';
@@ -17,7 +17,7 @@ const SignIn = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://127.0.0.1:8000/auth/jwt/create/', credentials);
+            const response = await axiosInstance.post('auth/jwt/create/', credentials);
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
             await login();

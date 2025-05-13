@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 import { Link, useSearchParams, useParams } from 'react-router-dom';
 import BookForm from './BookForm';
 import styles from './BookList.module.css';
@@ -31,7 +31,7 @@ const BookList = () => {
       const params = { username };
       if (shelfId) params.shelf_id = shelfId;
 
-      const response = await axios.get('http://127.0.0.1:8000/api/v1/books/', { params });
+      const response = await axiosInstance.get('api/v1/books/', { params });
       setBooks(response.data);
     } catch (error) {
       console.error("Error fetching books:", error);
@@ -46,7 +46,7 @@ const BookList = () => {
     const fetchShelf = async () => {
       if (shelfId) {
         try {
-          const response = await axios.get(`http://127.0.0.1:8000/api/v1/shelves/${shelfId}/`, {
+          const response = await axiosInstance.get(`api/v1/shelves/${shelfId}/`, {
             params: { username }
           });
           setCurrentShelf(response.data);
@@ -69,7 +69,7 @@ const BookList = () => {
 
   const handleFormSubmit = async (bookData) => {
     try {
-      await axios.post('http://127.0.0.1:8000/api/v1/books/', bookData);
+      await axiosInstance.post('api/v1/books/', bookData);
       setIsFormVisible(false);
       fetchBooks();
     } catch (error) {
@@ -95,10 +95,10 @@ const BookList = () => {
       const originalOrderCurrent = currentBook.order;
       const originalOrderTarget = targetBook.order;
 
-      await axios.patch(`http://127.0.0.1:8000/api/v1/books/${currentBook.id}/`, {
+      await axiosInstance.patch(`api/v1/books/${currentBook.id}/`, {
         order: originalOrderTarget
       });
-      await axios.patch(`http://127.0.0.1:8000/api/v1/books/${targetBook.id}/`, {
+      await axiosInstance.patch(`api/v1/books/${targetBook.id}/`, {
         order: originalOrderCurrent
       });
 

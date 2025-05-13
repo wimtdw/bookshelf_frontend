@@ -1,7 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import axios from 'axios';
 import createAppStore from './store/createStore';
 import BookList from './components/BookList';
 import BookDetail from './components/BookDetail';
@@ -17,13 +16,13 @@ import Achievements from './components/Achievements';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-axios.interceptors.request.use(config => {
-  const token = localStorage.getItem('access_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// axios.interceptors.request.use(config => {
+//   const token = localStorage.getItem('access_token');
+//   if (token) {
+//     config.headers.Authorization = `Bearer ${token}`;
+//   }
+//   return config;
+// });
 
 
 const store = createAppStore();

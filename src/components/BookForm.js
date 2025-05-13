@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './BookForm.module.css';
 import { useAchievements } from './useAchievements';
+import axiosInstance from '../api/axios';
 
 const BookForm = ({ initialData = {}, onSubmit }) => {
   const currentYear = new Date().getFullYear();
@@ -41,24 +42,23 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
     setError(null);
 
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/v1/search?title=${encodeURIComponent(formData.title)}&search_description=${searchDescription}`
-      );
-
-      if (!response.ok) throw new Error('Ошибка при поиске книги');
-
-      const data = await response.json();
+      const response = await axiosInstance.get('api/v1/search', {
+        params: {
+          title: formData.title,
+          search_description: searchDescription
+        }
+      });
 
       setFormData(prev => ({
         ...prev,
-        title: data.title || prev.title,
-        description: searchDescription ? (data.description || '') : '',
-        author: data.author || prev.author,
-        publicationYear: data.publication_date || prev.publicationYear,
-        genres: data.subjects || prev.genres,
-        cover: data.cover
+        title: response.data.title || prev.title,
+        description: searchDescription ? (response.data.description || '') : '',
+        author: response.data.author || prev.author,
+        publicationYear: response.data.publication_date || prev.publicationYear,
+        genres: response.data.subjects || prev.genres,
+        cover: response.data.cover
       }));
-      setUseCover(!!data.cover);
+      setUseCover(!!response.data.cover);
 
     } catch (err) {
       setFormData(prev => ({
@@ -70,7 +70,7 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
         cover: ''
       }));
       setUseCover(false);
-      setError(err.message || 'Не удалось найти информацию о книге');
+      setError(err.response?.data?.message || err.message || 'Не удалось найти информацию о книге');
     } finally {
       setLoading(false);
     }
@@ -78,19 +78,19 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { publicationYear, ...restFormData } = formData;
     const submitData = {
-      ...formData,
-      publication_year: formData.publicationYear,
-      genres: formData.genres
+      ...restFormData,
+      ...(publicationYear !== '' && { publication_year: publicationYear }),
     };
-
+  
     if (!useCover) {
       submitData.cover = '';
     }
-
+  
     try {
       await onSubmit(submitData);
-
+  
       if (!initialData.id) {
         try {
           await unlockAchievement(2);
@@ -99,7 +99,7 @@ const BookForm = ({ initialData = {}, onSubmit }) => {
         }
       }
     } catch (error) {
-      // Ошибка обрабатывается в родительском компоненте
+      // Error is handled by the parent component
     }
   };
 

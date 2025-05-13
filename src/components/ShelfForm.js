@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import styles from './ShelfForm.module.css';
 import { useAuth } from './AuthContext';
@@ -28,10 +28,10 @@ const ShelfForm = () => {
       try {
         const params = {};
         params.username = username;
-        const booksResponse = await axios.get('http://127.0.0.1:8000/api/v1/books/', { params });
+        const booksResponse = await axiosInstance.get('api/v1/books/', { params });
         setAvailableBooks(booksResponse?.data || []);
 
-        const backgroundsResponse = await axios.get('http://127.0.0.1:8000/api/v1/backgrounds/');
+        const backgroundsResponse = await axiosInstance.get('api/v1/backgrounds/');
         const backgrounds = backgroundsResponse?.data?.map(bg => ({
           id: bg.id,
           url: bg.url
@@ -39,7 +39,7 @@ const ShelfForm = () => {
         setBackgroundOptions(backgrounds);
 
         if (id) {
-          const shelfResponse = await axios.get(`http://127.0.0.1:8000/api/v1/shelves/${id}/`);
+          const shelfResponse = await axiosInstance.get(`api/v1/shelves/${id}/`);
           const shelfData = shelfResponse?.data || {};
 
           setFormData({
@@ -64,8 +64,8 @@ const ShelfForm = () => {
 
     try {
       const url = id
-        ? `http://127.0.0.1:8000/api/v1/shelves/${id}/`
-        : 'http://127.0.0.1:8000/api/v1/shelves/';
+        ? `api/v1/shelves/${id}/`
+        : 'api/v1/shelves/';
 
       const method = id ? 'put' : 'post';
       const dataToSend = {
@@ -74,7 +74,7 @@ const ShelfForm = () => {
         background_image: formData.background_image || null
       };
 
-      await axios[method](url, dataToSend);
+      await axiosInstance[method](url, dataToSend);
 
       if (!id) {
         try {

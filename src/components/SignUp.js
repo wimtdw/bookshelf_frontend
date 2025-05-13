@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 import styles from './SignUp.module.css';
 import { useAuth } from './AuthContext';
 import { useAchievements } from './useAchievements';
@@ -19,9 +19,9 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://127.0.0.1:8000/auth/users/', formData);
+            await axiosInstance.post('auth/users/', formData);
 
-            const response = await axios.post('http://127.0.0.1:8000/auth/jwt/create/', {
+            const response = await axiosInstance.post('auth/jwt/create/', {
                 username: formData.username,
                 password: formData.password
             });
@@ -31,7 +31,7 @@ const SignUp = () => {
             await login();
 
             try {
-                await unlockAchievement('3');
+                await unlockAchievement(3);
             } catch (achievementError) {
                 console.error('Ошибка разблокировки ачивки:', achievementError);
             }

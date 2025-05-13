@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 import styles from './Search.module.css';
 import { useAchievements } from './useAchievements';
 
@@ -12,7 +12,6 @@ const Search = () => {
     const navigate = useNavigate();
     const { unlockAchievement } = useAchievements();
 
-    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
     const debouncedSearchRef = useRef();
 
     useEffect(() => {
@@ -25,7 +24,7 @@ const Search = () => {
 
             setIsLoading(true);
             try {
-                const response = await axios.get(`${API_BASE_URL}/api/v1/users/?search=${term}`);
+                const response = await axiosInstance.get(`api/v1/users/?search=${term}`);
                 setSearchResults(response.data.results);
             } catch (error) {
                 console.error('Ошибка поиска:', error);
@@ -38,7 +37,7 @@ const Search = () => {
         return () => {
             debouncedSearchRef.current?.cancel();
         };
-    }, [API_BASE_URL]);
+    }, []);
 
     const handleSearchChange = (event) => {
         const value = event.target.value;
@@ -64,7 +63,7 @@ const Search = () => {
     const handleRandomUser = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`${API_BASE_URL}/api/v1/users/?random=True`);
+            const response = await axiosInstance.get(`api/v1/users/?random=True`);
 
             if (response.data.results?.[0]) {
                 const randomUser = response.data.results[0];
