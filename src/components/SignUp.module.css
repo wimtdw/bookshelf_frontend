@@ -79,3 +79,12 @@
     color:rgb(99, 99, 99);
     font-weight: 400;
 }
+
+.fieldError {
+    color: #ff4d4f;
+    font-size: 0.8rem;
+    margin-top: -0.5rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
+    width: 100%;
+}

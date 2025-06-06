@@ -11,13 +11,21 @@ const SignUp = () => {
         email: '',
         password: '',
     });
-    const [error, setError] = useState('');
+    const [errors, setErrors] = useState({
+        username: '',
+        email: '',
+        password: '',
+        general: ''
+    });
     const navigate = useNavigate();
     const { login } = useAuth();
     const { unlockAchievement } = useAchievements();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // Сбрасываем ошибки перед новой попыткой
+        setErrors({ username: '', email: '', password: '', general: '' });
+        
         try {
             await axiosInstance.post('auth/users/', formData);
 
@@ -40,43 +48,93 @@ const SignUp = () => {
 
         } catch (error) {
             console.error('Ошибка регистрации:', error);
-            setError('Ошибка регистрации. Проверьте введенные данные');
+            
+            // Обработка ошибок валидации с бэкенда
+            if (error.response && error.response.status === 400) {
+                const backendErrors = error.response.data;
+                
+                // Обновляем состояние ошибок для каждого поля
+                const newErrors = { 
+                    username: '', 
+                    email: '', 
+                    password: '',
+                    general: '' 
+                };
+                
+                // Обрабатываем каждое поле
+                if (backendErrors.username) {
+                    newErrors.username = backendErrors.username.join(' ');
+                }
+                if (backendErrors.email) {
+                    newErrors.email = backendErrors.email.join(' ');
+                }
+                if (backendErrors.password) {
+                    newErrors.password = backendErrors.password.join(' ');
+                }
+                
+                // Обработка не привязанных к полям ошибок
+                if (backendErrors.non_field_errors) {
+                    newErrors.general = backendErrors.non_field_errors.join(' ');
+                }
+                
+                setErrors(newErrors);
+            } else {
+                // Общие ошибки сети/сервера
+                setErrors({
+                    ...errors,
+                    general: 'Ошибка регистрации. Проверьте введенные данные'
+                });
+            }
         }
     };
 
     return (
         <div className={styles.container}>
             <h2 className={styles.heading}>Регистрация</h2>
-            {error && <div className={styles.error}>{error}</div>}
+            {errors.general && <div className={styles.error}>{errors.general}</div>}
+            
             <form onSubmit={handleSubmit} className={styles.form}>
-            <label className={styles.label}>Можно использовать латинские буквы, без пробелов. Если username занят, зарегистрироваться тоже не получится</label>
+                <label className={styles.label}>
+                    Можно использовать буквы, цифры и @/./+/-/_ символы, без пробелов
+                </label>
                 <input
                     type="text"
                     placeholder="Имя пользователя"
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                     className={styles.input}
                 />
-                <label className={styles.label}>Например, "email@email.com"</label>
+                {errors.username && <div className={styles.fieldError}>{errors.username}</div>}
+                
+                <label className={styles.label}>
+                    Например, "email@email.com"
+                </label>
                 <input
                     type="email"
                     placeholder="Email"
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className={styles.input}
                 />
-                <label className={styles.label}>Минимум 8 символов</label>
+                {errors.email && <div className={styles.fieldError}>{errors.email}</div>}
+                
+                <label className={styles.label}>
+                    Минимум 8 символов
+                </label>
                 <input
                     type="password"
                     placeholder="Пароль"
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     className={styles.input}
                 />
+                {errors.password && <div className={styles.fieldError}>{errors.password}</div>}
+                
                 <button type="submit" className={styles.button}>Зарегистрироваться</button>
             </form>
+            
             <div className={styles.linkContainer}>
                 Уже есть аккаунт? <Link to="/signin" className={styles.link}>Войти</Link>
             </div>
             <div className={styles.linkContainer}>
-                <Link to="/" className={styles.link} >На главную</Link>
+                <Link to="/" className={styles.link}>На главную</Link>
             </div>
         </div>
     );
