@@ -1,4 +1,8 @@
-# Getting Started with Create React App
+## Фронтенд для приложения "Виртуальная книжная полка"
+
+Технологии: React, JavaScript, HTML, CSS
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
