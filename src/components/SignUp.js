@@ -23,7 +23,6 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Сбрасываем ошибки перед новой попыткой
         setErrors({ username: '', email: '', password: '', general: '' });
         
         try {
@@ -49,11 +48,9 @@ const SignUp = () => {
         } catch (error) {
             console.error('Ошибка регистрации:', error);
             
-            // Обработка ошибок валидации с бэкенда
             if (error.response && error.response.status === 400) {
                 const backendErrors = error.response.data;
                 
-                // Обновляем состояние ошибок для каждого поля
                 const newErrors = { 
                     username: '', 
                     email: '', 
@@ -61,7 +58,6 @@ const SignUp = () => {
                     general: '' 
                 };
                 
-                // Обрабатываем каждое поле
                 if (backendErrors.username) {
                     newErrors.username = backendErrors.username.join(' ');
                 }
@@ -72,14 +68,12 @@ const SignUp = () => {
                     newErrors.password = backendErrors.password.join(' ');
                 }
                 
-                // Обработка не привязанных к полям ошибок
                 if (backendErrors.non_field_errors) {
                     newErrors.general = backendErrors.non_field_errors.join(' ');
                 }
                 
                 setErrors(newErrors);
             } else {
-                // Общие ошибки сети/сервера
                 setErrors({
                     ...errors,
                     general: 'Ошибка регистрации. Проверьте введенные данные'
@@ -95,7 +89,7 @@ const SignUp = () => {
             
             <form onSubmit={handleSubmit} className={styles.form}>
                 <label className={styles.label}>
-                    Можно использовать буквы, цифры и @/./+/-/_ символы, без пробелов
+                    Можно использовать буквы, цифры и @/./+/-/_ символы, без пробелов. Если username занят, зарегистрироваться тоже не получится
                 </label>
                 <input
                     type="text"
